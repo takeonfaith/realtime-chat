@@ -1,0 +1,120 @@
+import React from "react";
+import styled from "styled-components";
+import { useModal } from "../../..";
+import { Avatar } from "../../../../shared/ui/molecules";
+import { ChatModal, UserModal } from "../molecules";
+import { User as IUser } from "../../../../shared/api/model/user";
+import { Checkbox } from "../../../../shared/ui/atoms";
+
+const UserWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px;
+  border-radius: var(--brLight);
+  color: var(--text);
+  font-weight: 600;
+  cursor: pointer;
+
+  .user-inner {
+    display: flex;
+    align-items: center;
+  }
+
+  &:hover {
+    background: #f7f7f7;
+  }
+
+  .name-and-status {
+    display: flex;
+    flex-direction: column;
+
+    .name {
+      font-size: 0.85em;
+    }
+
+    .status {
+      font-size: 0.7em;
+      opacity: 0.6;
+    }
+  }
+`;
+
+interface Props {
+  avatar?: string;
+  name: string;
+  _id?: string;
+  status: "online" | "offline";
+  login: string;
+  type: "chat" | "user";
+  added?: boolean;
+  setAdded?: any;
+  actionOnUser?: React.ReactNode;
+}
+
+const LoadedUser = ({
+  avatar,
+  name,
+  _id,
+  login,
+  status,
+  type,
+  added,
+  setAdded,
+  actionOnUser,
+}: Props) => {
+  const { open } = useModal();
+
+  const handleAdd = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    e.stopPropagation();
+    if (added) {
+      setAdded((prev: IUser[]) => prev.filter((user) => user._id !== _id));
+    } else {
+      setAdded((prev: IUser[]) => [
+        ...prev,
+        {
+          avatar,
+          name,
+          _id,
+          login,
+          type,
+        },
+      ]);
+    }
+  };
+
+  return (
+    <UserWrapper
+      className="user"
+      onClick={(e) => {
+        open(
+          type === "user" ? (
+            <UserModal
+              avatar={avatar}
+              name={name}
+              _id={_id}
+              status={status}
+              login={login}
+            />
+          ) : (
+            <ChatModal />
+          )
+        );
+      }}
+    >
+      <div className="user-inner">
+        {!!setAdded && (
+          <Checkbox checked={added ?? false} setChecked={handleAdd} />
+        )}
+        <Avatar avatar={avatar} width="30px" height="30px" marginRight="7px" />
+        <div className="name-and-status">
+          <span className="name">{name}</span>
+          <span className="status">{status}</span>
+        </div>
+      </div>
+      {actionOnUser}
+    </UserWrapper>
+  );
+};
+
+export default LoadedUser;
