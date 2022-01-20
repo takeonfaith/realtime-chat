@@ -66,9 +66,8 @@ const UserModal = ({ avatar, name, _id, status, login }: Props) => {
     if (user?._id && _id) {
       try {
         setLoading(true);
-        console.log("Создание чата");
+
         const { data } = await chatApi.createChat(user._id, _id);
-        console.log(data);
 
         chatModel.events.changeSelectedChat({ chat: data });
         close();

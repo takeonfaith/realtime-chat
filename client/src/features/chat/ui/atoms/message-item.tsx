@@ -6,7 +6,6 @@ import { userModel } from "../../../../entities/user";
 import { Message } from "../../../../shared/api/model/message";
 import localizeDate from "../../../../shared/lib/localize-date";
 import { Button } from "../../../../shared/ui/atoms";
-import { useModal } from "../../../../widgets/modal/lib/hooks";
 import ShareMessage from "../molecules/share-message";
 
 const MessageItemWrapper = styled.div<{
@@ -31,21 +30,17 @@ const MessageItemWrapper = styled.div<{
     display: flex;
     flex-direction: column;
     background: ${({ isYourMessage }) =>
-      isYourMessage
-        ? "linear-gradient(33deg,#5671ff 0%,#598cea 100%)"
-        : "var(--schedule)"};
-    color: ${({ isYourMessage }) => (isYourMessage ? "#fff" : "var(--text)")};
+      isYourMessage ? "#6473dd" : "#334097"};
+    color: #fff;
     padding: 7px;
     border-radius: ${({ isLast }) => (!isLast ? "10px" : "10px 10px 10px 0")};
-    box-shadow: var(--schedule-shadow);
     margin-left: 10px;
     max-width: 40%;
     position: relative;
 
     .name-and-time {
       b {
-        color: ${({ isYourMessage }) =>
-          isYourMessage ? "#fff" : "var(--text)"};
+        color: #fff;
         font-size: 0.8em;
         margin-bottom: 5px;
         margin-right: 10px;
@@ -76,7 +71,6 @@ interface Props {
 }
 
 const MessageItem = ({ name, message, isLast }: Props) => {
-  const { open } = useModal();
   const {
     data: { user },
   } = userModel.selectors.useUser();

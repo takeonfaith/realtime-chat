@@ -9,6 +9,7 @@ const InputWrapper = styled.div<{ leftIcon: boolean }>`
   justify-content: space-between;
   position: relative;
   width: 100%;
+  color: #fff;
 
   h5 {
     margin-bottom: 5px;
@@ -19,15 +20,15 @@ const InputWrapper = styled.div<{ leftIcon: boolean }>`
     left: 7px;
     top: 55%;
     transform: translateY(-50%);
-    color: var(--text);
+    color: #ffffff75;
     opacity: 0.4;
   }
 
   input {
     border: none;
-    color: var(--text);
+    color: #fff;
     outline: none;
-    background: var(--search);
+    background: #2a3b93;
     height: 100%;
     width: 100%;
     padding: 10px;
@@ -38,10 +39,11 @@ const InputWrapper = styled.div<{ leftIcon: boolean }>`
 
     &::placeholder {
       font-weight: 500;
+      color: #ffffff75;
     }
 
     &:focus-visible {
-      outline: 4px solid var(--almostTransparentOpposite);
+      outline: 4px solid #ffffff1c;
     }
 
     &:focus:not(:focus-visible) {
@@ -56,8 +58,6 @@ const InputWrapper = styled.div<{ leftIcon: boolean }>`
     width: 25px;
     height: 25px;
     border-radius: 5px;
-    background: var(--search2);
-    color: var(--text);
     padding: 0;
 
     &:active {

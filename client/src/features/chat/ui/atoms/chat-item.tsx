@@ -22,12 +22,12 @@ const ChatItemWrapper = styled(Link)<{ isChosen: boolean }>`
     align-items: center;
     justify-content: center;
     width: 100%;
-    color: ${({ isChosen }) => (isChosen ? "#fff" : "var(--text)")};
+    color: #fff;
     width: 100%;
     padding: 10px;
     border-radius: var(--brLight);
     background: ${({ isChosen }) =>
-      isChosen ? Colors.blue.main : "var(--schedule)"};
+      isChosen ? Colors.blue.main : "transparent"};
     overflow: hidden;
     position: relative;
 
@@ -114,8 +114,6 @@ const ChatItem = ({
   const params = useRouteMatch(`${CHAT_ROUTE}/:chatId`)?.params as {
     chatId: string | undefined;
   };
-
-  console.log(isGroupChat && getChatName(user?._id, users));
 
   if (!user) return null;
 

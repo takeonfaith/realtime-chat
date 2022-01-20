@@ -39,7 +39,6 @@ const getUserFx = createEffect<UserToken, UserStore>(
   async ({ token }: UserToken): Promise<UserStore> => {
     try {
       const { data } = await userApi.getUser(token);
-      console.log("ewqeqw");
 
       return {
         currentUser: data,
@@ -47,8 +46,6 @@ const getUserFx = createEffect<UserToken, UserStore>(
         error: "",
       };
     } catch (error) {
-      console.log("(((((");
-
       logout();
       throw new Error("token expired");
     }
@@ -89,8 +86,6 @@ const loginFx = createEffect<LoginData, UserStore>(
         error: null,
       };
     } catch (error) {
-      console.log(error);
-
       throw new Error("Не удалось войти");
     }
   }
@@ -120,8 +115,6 @@ forward({ from: signUp, to: signUpFx });
 //  In effector chat core-team describe something like this code (Perhaps a better solution can be found)
 // TODO: ask about token expires (Looks like it won't expire)
 const tokenInStorage = JSON.parse(localStorage.getItem("token") ?? "null");
-
-console.log(!!tokenInStorage);
 
 !!tokenInStorage && getUserFx(tokenInStorage);
 

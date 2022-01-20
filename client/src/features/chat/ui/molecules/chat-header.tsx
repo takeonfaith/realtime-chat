@@ -11,7 +11,6 @@ import { Button } from "../../../../shared/ui/atoms";
 import LocalSearch from "../../../../shared/ui/molecules/local-search";
 import useModal from "../../../../widgets/modal";
 import User from "../../../../widgets/user";
-import getChatName from "../../lib/get-chat-name";
 import getOtherUser from "../../lib/get-other-user";
 
 const ChatHeaderWrapper = styled.div`
@@ -21,8 +20,7 @@ const ChatHeaderWrapper = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 0 10px;
-  background: var(--schedule);
-  box-shadow: 5px 0 5px #00000036;
+  background: #2e3f93;
   position: relative;
   z-index: 2;
 `;
@@ -44,17 +42,11 @@ const ChatHeader = () => {
     else history.push("/chat");
   };
 
-  console.log(selectedChat);
-
   if (!user?._id) return null;
 
   return (
     <ChatHeaderWrapper ref={menuRef}>
-      <Button
-        icon={<FiX />}
-        onClick={handleClick}
-        background="var(--schedule)"
-      />
+      <Button icon={<FiX />} onClick={handleClick} />
       {!searchMode ? (
         <User
           avatar={""}
@@ -107,7 +99,6 @@ const ChatHeader = () => {
             ),
           })
         }
-        background="var(--schedule)"
       />
     </ChatHeaderWrapper>
   );

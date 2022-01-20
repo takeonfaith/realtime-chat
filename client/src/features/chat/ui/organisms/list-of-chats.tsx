@@ -20,9 +20,8 @@ const ListOfChatsWrapper = styled.div<{ chatId?: string }>`
   width: 350px;
   transition: 0.2s width, 0.2s min-width, 0.2s padding, 0.2s opacity;
   height: 100%;
-  background: var(--schedule);
-  color: var(--text);
-  box-shadow: 1px 0 5px #00000036;
+  background: #374aa7;
+  color: #fff;
 
   .search-and-button {
     display: flex;

@@ -9,8 +9,8 @@ export const Container = styled.div<{
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--almostTransparent);
-  color: var(--text);
+  background: #ffffff36;
+  color: #fff;
 
   svg {
     width: 40%;

@@ -7,14 +7,14 @@ const EmptyHereWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text);
+  color: #fff;
   font-weight: 600;
   font-size: 0.8em;
 
   span {
     padding: 10px 20px;
     border-radius: var(--brSemi);
-    background: var(--almostTransparentOpposite);
+    background: #ffffff2d;
   }
 `;
 

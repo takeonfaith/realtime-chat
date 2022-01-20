@@ -4,13 +4,13 @@ import { Title } from "../../../../shared/ui/atoms";
 
 const TopDateWrapper = styled.div`
   margin: 5px 0 10px 0;
-  color: var(--text);
+  color: #fff;
   position: sticky;
   top: 10px;
   z-index: 10;
 
   h5 {
-    background: var(--search);
+    background: #313b9b;
     padding: 6px 12px;
     border-radius: var(--brSemi);
     display: inline-block;

@@ -12,7 +12,7 @@ const UserWrapper = styled.div`
   justify-content: space-between;
   padding: 8px;
   border-radius: var(--brLight);
-  color: var(--text);
+  color: #fff;
   font-weight: 600;
   cursor: pointer;
 
@@ -22,7 +22,7 @@ const UserWrapper = styled.div`
   }
 
   &:hover {
-    background: #f7f7f7;
+    background: #2a3b93;
   }
 
   .name-and-status {

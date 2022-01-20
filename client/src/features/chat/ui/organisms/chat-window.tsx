@@ -43,7 +43,6 @@ const ChatWindow = () => {
 
   const [loading, setLoading] = useState(true);
   const [messages, setMessages] = useState<Message[]>([]);
-  const [socketConnected, setSocketConnected] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const {
     data: { notifications },
@@ -60,7 +59,6 @@ const ChatWindow = () => {
         socket.emit("join chat", params.chatId);
       } catch (error) {
         setLoading(false);
-        console.log("Не удалось загрузить сообщения");
       }
     }
   };
@@ -68,11 +66,7 @@ const ChatWindow = () => {
   useEffect(() => {
     if (user?._id) {
       socket = io(API_BASE_URL);
-      console.log("user connection");
-
-      console.log(socket);
       socket.emit("setup", user);
-      socket.on("connected", () => setSocketConnected(true));
       socket.on("typing", () => setIsTyping(true));
       socket.on("stop typing", () => setIsTyping(false));
 
@@ -90,11 +84,8 @@ const ChatWindow = () => {
         chatModel.effects.getChatsFx(user?._id);
 
         if (!selectedChat || selectedChat !== newMessage.chat._id) {
-          console.log(notifications.includes(newMessage));
-
           if (!notifications.includes(newMessage)) {
             notificationModel.events.pushNotification({ message: newMessage });
-            console.log(newMessage);
           }
         } else {
           setMessages((prev) => [...prev, newMessage]);

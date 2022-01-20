@@ -5,10 +5,8 @@ import { CHAT_ROUTE, LOGIN_ROUTE, privateRoutes, publicRoutes } from "./routes";
 
 const Router = () => {
   const {
-    data: { user, isAuthenticated },
+    data: { isAuthenticated },
   } = userModel.selectors.useUser();
-
-  console.log(user);
 
   return isAuthenticated ? (
     <>

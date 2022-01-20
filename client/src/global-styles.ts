@@ -11,6 +11,7 @@ const GlobalStyles = createGlobalStyle`
 
 	body {
 		overflow: hidden;
+		background: #090e31;
 	}
 
 	@media (min-width: 1001px) {
@@ -26,7 +27,7 @@ const GlobalStyles = createGlobalStyle`
 			border-radius: 100px;
 			border: 4px solid transparent;
 			background-clip: content-box;
-			background-color: var(--theme-mild-opposite);
+			background-color: #fff;
 		}
 
 		::-webkit-scrollbar-thumb:hover {

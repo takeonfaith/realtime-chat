@@ -18,9 +18,9 @@ const ButtonWrapper = styled.button<{
   align-items: center;
   justify-content: ${({ align }) => align ?? "center"};
   border: none;
-  color: ${({ textColor }) => (textColor ? textColor : "var(--text)")};
+  color: ${({ textColor }) => (textColor ? textColor : "#ffffff81")};
   background: ${({ isChosen, background }) =>
-    isChosen ? "var(--blue)" : background ?? "var(--search)"};
+    isChosen ? "var(--blue)" : background ?? "#2a3b93"};
   padding: 10px;
   border-radius: 10px;
   cursor: pointer;
@@ -45,8 +45,7 @@ const ButtonWrapper = styled.button<{
 
   &:hover {
     background: ${({ hoverBackground, isChosen, background }) =>
-      hoverBackground ??
-      (isChosen ? "var(--blue)" : background ?? "var(--search)")};
+      hoverBackground ?? (isChosen ? "var(--blue)" : background ?? "#1c2a76")};
   }
 
   svg {

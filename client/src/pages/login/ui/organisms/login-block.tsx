@@ -11,9 +11,8 @@ const LoginBlockWrapper = styled.div`
   flex-direction: column;
   width: 100%;
   max-width: 450px;
-  background: var(--theme);
-  color: var(--text);
-  box-shadow: 0 0 100px #0000004e;
+  background: #3e4aa2;
+  color: #fff;
   border-radius: 8px;
   padding: 20px;
   row-gap: 20px;

@@ -4,6 +4,8 @@ import { ImAttachment } from "react-icons/im";
 import { IoMdSend } from "react-icons/io";
 import { Socket } from "socket.io-client";
 import styled from "styled-components";
+import { chatModel } from "../../../../entities/chat";
+import { userModel } from "../../../../entities/user";
 import { chatApi } from "../../../../shared/api";
 import { Message } from "../../../../shared/api/model/message";
 import { Button, Input, Loading } from "../../../../shared/ui/atoms";
@@ -11,14 +13,12 @@ import { Button, Input, Loading } from "../../../../shared/ui/atoms";
 const ChatInputWrapper = styled.div`
   display: flex;
   align-items: center;
-  background: var(--schedule);
+  background: #2e3f93;
   padding: 5px 10px;
-  /* box-shadow: 0 0 1px #00000039; */
-  box-shadow: 3px -2px 3px #00000029;
   z-index: 2;
 
   input {
-    background: var(--schedule);
+    background: #2e3f93;
   }
 `;
 
@@ -32,9 +32,12 @@ const ChatInput = ({ chatId, setMessages, socket }: Props) => {
   const [message, setMessage] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [typing, setTyping] = useState(false);
+  const {
+    data: { user },
+  } = userModel.selectors.useUser();
 
   const send = async () => {
-    if (message.length) {
+    if (message.length && user) {
       socket.emit("stop typing", chatId);
 
       try {
@@ -42,12 +45,11 @@ const ChatInput = ({ chatId, setMessages, socket }: Props) => {
         const { data } = await chatApi.sendMessage(message, chatId);
         setMessage("");
         socket.emit("new message", data);
+        chatModel.effects.getChatsFx(user?._id);
         setMessages((prev: Message[]) => [...prev, data]);
         setLoading(false);
       } catch (error) {
         setLoading(false);
-
-        console.log("Не удалось отправить сообщение");
       }
     }
   };

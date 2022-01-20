@@ -21,8 +21,6 @@ const NotificationItem = (props: Notification) => {
 
   if (!user) return null;
 
-  console.log(chat.latestMessage);
-
   return (
     <ChatItem
       {...chat}

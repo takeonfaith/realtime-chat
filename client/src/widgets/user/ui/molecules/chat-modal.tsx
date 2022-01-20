@@ -69,7 +69,7 @@ const ChatModal = () => {
     [selectedChat?._id]
   );
 
-  if (!selectedChat || !selectedChat.groupAdmin) return null;
+  if (!selectedChat || !selectedChat.groupAdmin || !user) return null;
 
   const removeHandle = async (userId: string) => {
     try {
@@ -79,6 +79,7 @@ const ChatModal = () => {
       setRenameCompleted(true);
       if (userId === user?._id) {
         history.push("/chat");
+        chatModel.effects.getChatsFx(user._id);
         close();
       } else {
         chatModel.events.changeSelectedChat({ chat: data });
@@ -95,6 +96,7 @@ const ChatModal = () => {
         const { data } = await chatApi.renameGroup(selectedChat._id, chatName);
         setRenameLoading(false);
         chatModel.events.changeSelectedChat({ chat: data });
+        chatModel.effects.getChatsFx(user._id);
       }
     } catch (error) {
       setRenameLoading(true);

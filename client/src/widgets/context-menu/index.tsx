@@ -41,8 +41,6 @@ const ContextMenu = () => {
   useEffect(() => {
     window.addEventListener("click", (e) => {
       if (open) {
-        console.log("test");
-
         calcPosition(e);
       }
     });

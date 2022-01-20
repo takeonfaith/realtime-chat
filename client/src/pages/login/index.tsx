@@ -8,7 +8,6 @@ const LoginWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background: var(--theme);
   flex-direction: column;
 
   img {
@@ -26,8 +25,6 @@ const LoginWrapper = styled.div`
 `;
 
 const LoginPage = () => {
-  console.log("test");
-
   return (
     <LoginWrapper>
       <LoginBlock />
