@@ -10,11 +10,17 @@ interface Props {
   width?: string;
   height?: string;
   marginRight?: string;
+  background?: string;
 }
 
-function Avatar({ avatar, width, height, marginRight }: Props) {
+function Avatar({ avatar, width, height, marginRight, background }: Props) {
   return (
-    <Container width={width} height={height} marginRight={marginRight}>
+    <Container
+      width={width}
+      height={height}
+      marginRight={marginRight}
+      background={background}
+    >
       {avatar ? <Img src={avatar} /> : <FiUser />}
     </Container>
   );

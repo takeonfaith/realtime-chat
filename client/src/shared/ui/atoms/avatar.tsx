@@ -4,13 +4,15 @@ export const Container = styled.div<{
   width?: string;
   height?: string;
   marginRight?: string;
+  background?: string;
 }>`
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #ffffff36;
-  color: #fff;
+  background: ${({ background }) =>
+    background ?? "var(--theme-transparent-opposite)"};
+  color: var(--text);
 
   svg {
     width: 40%;

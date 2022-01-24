@@ -7,6 +7,7 @@ import { chatModel } from "../../../../entities/chat";
 import { notificationModel } from "../../../../entities/notifications";
 import { userModel } from "../../../../entities/user";
 import { Chat, User as IUser } from "../../../../shared/api/model";
+import { Message } from "../../../../shared/api/model/message";
 import { Button, Divider, Title } from "../../../../shared/ui/atoms";
 import LocalSearch from "../../../../shared/ui/molecules/local-search";
 import { useModal, User } from "../../../../widgets";
@@ -20,8 +21,8 @@ const ListOfChatsWrapper = styled.div<{ chatId?: string }>`
   width: 350px;
   transition: 0.2s width, 0.2s min-width, 0.2s padding, 0.2s opacity;
   height: 100%;
-  background: #374aa7;
-  color: #fff;
+  background: var(--list-of-chats);
+  color: var(--text);
 
   .search-and-button {
     display: flex;
@@ -70,6 +71,7 @@ const ListOfChats = () => {
   const [foundChats, setFoundChats] = useState<{
     chats: Chat[];
     users: IUser[];
+    messages: Message[];
   } | null>(null);
   const {
     data: { user },
@@ -125,7 +127,7 @@ const ListOfChats = () => {
       </div>
       <Divider margin="10px auto" />
       <ChatItems
-        chats={foundChats ?? { chats: data.chats, users: [] }}
+        chats={foundChats ?? { chats: data.chats, users: [], messages: [] }}
         loading={loading}
       />
     </ListOfChatsWrapper>

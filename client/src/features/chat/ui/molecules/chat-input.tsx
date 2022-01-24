@@ -13,12 +13,12 @@ import { Button, Input, Loading } from "../../../../shared/ui/atoms";
 const ChatInputWrapper = styled.div`
   display: flex;
   align-items: center;
-  background: #2e3f93;
+  background: var(--list-of-chats);
   padding: 5px 10px;
   z-index: 2;
 
   input {
-    background: #2e3f93;
+    background: transparent;
   }
 `;
 
@@ -35,20 +35,39 @@ const ChatInput = ({ chatId, setMessages, socket }: Props) => {
   const {
     data: { user },
   } = userModel.selectors.useUser();
+  const {
+    data: { selectedChat },
+  } = chatModel.selectors.useChats();
 
   const send = async () => {
-    if (message.length && user) {
+    if (message.length && user && selectedChat) {
       socket.emit("stop typing", chatId);
 
       try {
         setLoading(true);
-        const { data } = await chatApi.sendMessage(message, chatId);
+        const newMessage: Message = {
+          chat: selectedChat,
+          sender: user,
+          createdAt: new Date().toString(),
+          content: message,
+          received: "pending",
+        };
         setMessage("");
+        setMessages((prev: Message[]) => [...prev, newMessage]);
+        const { data } = await chatApi.sendMessage(message, chatId);
         socket.emit("new message", data);
+        setMessages((messages: Message[]) => {
+          messages[messages.length - 1].received = "success";
+          return [...messages];
+        });
         chatModel.effects.getChatsFx(user?._id);
-        setMessages((prev: Message[]) => [...prev, data]);
+
         setLoading(false);
       } catch (error) {
+        setMessages((messages: Message[]) => {
+          messages[messages.length - 1].received = "failure";
+          return [...messages];
+        });
         setLoading(false);
       }
     }

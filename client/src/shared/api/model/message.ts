@@ -5,6 +5,7 @@ export interface Message {
   createdAt: string;
   sender: User;
   chat: Chat;
+  received: "pending" | "success" | "failure";
 }
 
 export type Messages = Message[];

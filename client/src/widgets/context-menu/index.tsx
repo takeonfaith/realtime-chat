@@ -18,11 +18,11 @@ const ContextMenuWrapper = styled.div<{
   width: 250px;
   left: ${({ left }) => left + "px"};
   top: ${({ top }) => top + "px"};
-  background: var(--schedule);
+  background: var(--theme);
   border-radius: var(--brLight);
   box-shadow: 0 0 20px #0000003b;
   transition: 0.2s height, 0.2s opacity, 0.2s visibility, 0.2s transform;
-  z-index: 200;
+  z-index: 4;
   padding: 8px;
   display: flex;
   flex-direction: column;
@@ -39,13 +39,13 @@ const ContextMenu = () => {
   const contextRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    window.addEventListener("click", (e) => {
-      if (open) {
-        calcPosition(e);
-      }
-    });
+    // window.addEventListener("click", (e) => {
+    //   if (open) {
+    //     calcPosition(e);
+    //   }
+    // });
     window.addEventListener("contextmenu", (e) => {
-      if (open) calcPosition(e);
+      calcPosition(e);
     });
   }, [open]);
 
@@ -56,6 +56,7 @@ const ContextMenu = () => {
       ref={contextRef}
       left={position.x}
       top={position.y}
+      onClick={(e) => e.stopPropagation()}
     >
       {content}
     </ContextMenuWrapper>

@@ -20,15 +20,15 @@ const InputWrapper = styled.div<{ leftIcon: boolean }>`
     left: 7px;
     top: 55%;
     transform: translateY(-50%);
-    color: #ffffff75;
+    color: var(--theme-strong-transparent-opposite);
     opacity: 0.4;
   }
 
   input {
     border: none;
-    color: #fff;
+    color: var(--text);
     outline: none;
-    background: #2a3b93;
+    background: var(--scheduleBg);
     height: 100%;
     width: 100%;
     padding: 10px;
@@ -39,7 +39,7 @@ const InputWrapper = styled.div<{ leftIcon: boolean }>`
 
     &::placeholder {
       font-weight: 500;
-      color: #ffffff75;
+      color: var(--theme-strong-transparent-opposite);
     }
 
     &:focus-visible {

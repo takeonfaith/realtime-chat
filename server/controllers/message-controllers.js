@@ -56,7 +56,46 @@ const allMessages = expressAsyncHandler(async (req, res) => {
 	}
 })
 
+const searchMessages = expressAsyncHandler(async (req, res) => {
+	try {
+		const messages = await Message.find({ chat: req.params.chatId, $and: [{ content: { $regex: req.query.query, $options: "i" } }] })
+			.populate('sender', 'name login')
+			.populate('chat')
+
+		res.json(messages)
+
+	} catch (error) {
+		console.log(error.message);
+	}
+})
+
+const searchAllMessages = expressAsyncHandler(async (req, res) => {
+	try {
+		Chat.find({ users: { $elemMatch: { $eq: req.user._id } } }).then(async userChats => {
+			let message = await Message.find({
+				content: { $regex: req.query.query, $options: "i" }, $and: [{
+					chat: { $in: userChats.map(chat => chat._id) }
+				}]
+			})
+				.populate('sender', 'name login')
+				.populate('chat')
+
+			message = await User.populate(message, {
+				path: 'chat.users',
+				select: 'name login'
+			})
+
+			res.json(message)
+		})
+
+	} catch (error) {
+		console.log(error.message);
+	}
+})
+
 module.exports = {
 	sendMessage,
-	allMessages
+	allMessages,
+	searchMessages,
+	searchAllMessages
 }

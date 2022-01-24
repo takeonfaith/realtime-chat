@@ -6,6 +6,7 @@ import { userModel } from "../../../../entities/user";
 import { Message } from "../../../../shared/api/model/message";
 import localizeDate from "../../../../shared/lib/localize-date";
 import { Button } from "../../../../shared/ui/atoms";
+import getMessageReceivedIcon from "../../lib/get-message-received-icon";
 import ShareMessage from "../molecules/share-message";
 
 const MessageItemWrapper = styled.div<{
@@ -30,8 +31,8 @@ const MessageItemWrapper = styled.div<{
     display: flex;
     flex-direction: column;
     background: ${({ isYourMessage }) =>
-      isYourMessage ? "#6473dd" : "#334097"};
-    color: #fff;
+      isYourMessage ? "var(--reallyBlue)" : "var(--theme)"};
+    color: ${({ isYourMessage }) => (isYourMessage ? "#fff" : "var(--text)")};
     padding: 7px;
     border-radius: ${({ isLast }) => (!isLast ? "10px" : "10px 10px 10px 0")};
     margin-left: 10px;
@@ -40,7 +41,8 @@ const MessageItemWrapper = styled.div<{
 
     .name-and-time {
       b {
-        color: #fff;
+        color: ${({ isYourMessage }) =>
+          isYourMessage ? "#fff" : "var(--text)"};
         font-size: 0.8em;
         margin-bottom: 5px;
         margin-right: 10px;
@@ -118,7 +120,10 @@ const MessageItem = ({ name, message, isLast }: Props) => {
       <div className="name-and-message" onContextMenu={handleRightClick}>
         <div className="name-and-time">
           <b>{name}</b>
-          <span>{localizeDate(message.createdAt, "hours")}</span>
+          <span>
+            {localizeDate(message.createdAt, "hours")}{" "}
+            {getMessageReceivedIcon(message.received)}
+          </span>
         </div>
         <span className="message">{message.content}</span>
       </div>

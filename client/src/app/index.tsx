@@ -1,7 +1,7 @@
 import React from "react";
 import { HashRouter } from "react-router-dom";
 import styled from "styled-components";
-import { ContextMenu } from "../widgets";
+import { Confirm, ContextMenu } from "../widgets";
 import { Modal } from "../widgets/modal";
 import { ModalProvider } from "../widgets/modal/lib";
 import Router from "./routes/router";
@@ -20,6 +20,7 @@ const App = () => {
         <HashRouter basename="/">
           <Modal />
           <ContextMenu />
+          <Confirm />
           <Router />
         </HashRouter>
       </ModalProvider>

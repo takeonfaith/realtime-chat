@@ -18,11 +18,11 @@ const ButtonWrapper = styled.button<{
   align-items: center;
   justify-content: ${({ align }) => align ?? "center"};
   border: none;
-  color: ${({ textColor }) => (textColor ? textColor : "#ffffff81")};
+  color: ${({ textColor }) => (textColor ? textColor : "var(--text)")};
   background: ${({ isChosen, background }) =>
-    isChosen ? "var(--blue)" : background ?? "#2a3b93"};
+    isChosen ? "var(--blue)" : background ?? "var(--scheduleBg)"};
   padding: 10px;
-  border-radius: 10px;
+  border-radius: 7px;
   cursor: pointer;
   font-weight: bold;
   transition: 0.2s transform;
@@ -45,7 +45,8 @@ const ButtonWrapper = styled.button<{
 
   &:hover {
     background: ${({ hoverBackground, isChosen, background }) =>
-      hoverBackground ?? (isChosen ? "var(--blue)" : background ?? "#1c2a76")};
+      hoverBackground ??
+      (isChosen ? "var(--blue)" : background ?? "var(--mild-hover-bg)")};
   }
 
   svg {

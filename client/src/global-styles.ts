@@ -11,7 +11,9 @@ const GlobalStyles = createGlobalStyle`
 
 	body {
 		overflow: hidden;
-		background: #090e31;
+		/* https://images8.alphacoders.com/978/978576.jpg */
+		background-image: url("https://images5.alphacoders.com/113/1132429.jpg");
+		background-size: cover;
 	}
 
 	@media (min-width: 1001px) {
@@ -27,7 +29,7 @@ const GlobalStyles = createGlobalStyle`
 			border-radius: 100px;
 			border: 4px solid transparent;
 			background-clip: content-box;
-			background-color: #fff;
+			background-color: var(--text);
 		}
 
 		::-webkit-scrollbar-thumb:hover {
@@ -81,7 +83,8 @@ const GlobalStyles = createGlobalStyle`
 		--orangeGradient: linear-gradient(45deg,#e27992,#f4af99);
 		--almostTransparent: rgba(0,0,0,0.281);
 		--almostTransparentOpposite: hsla(0,0%,100%,0.103);
-		--schedule: #2e2e2e;
+		--list-of-chats: #2e2e2e;
+		--mild-hover-bg: #000000;
 		--scheduleBg: #232323;
 		--schedule-shadow: 0;
 	}
@@ -93,7 +96,7 @@ const GlobalStyles = createGlobalStyle`
 		--primary-background: rgb(243, 243, 243);
 		--leftside-bar-shadow: 5px 5px 10px hsla(0,0%,40.8%,0.24);
 		--header: #e9e9e9;
-		--text: #272727;
+		--text: #323232;
 		--invert-text: #f0f0f0;
 		--select: #f3f3f3;
 		--content: #f1f1f1;
@@ -116,7 +119,10 @@ const GlobalStyles = createGlobalStyle`
 		--orangeGradient: linear-gradient(45deg,#ffbdf1,#ff94ad);
 		--almostTransparent: hsla(0,0%,87.8%,0.486);
 		--almostTransparentOpposite: rgba(53,53,53,0.151);
-		--schedule: #fff;
+		--list-of-chats: #fff;
+		--mild-hover-bg: #f0f0f0;
+		--theme-transparent-opposite: #0000001a;
+		--theme-strong-transparent-opposite: #0000004a;
 		--scheduleBg: #eee;
 		--schedule-shadow: 0 0 2px rgb(0 0 0 / 24%);
 	}

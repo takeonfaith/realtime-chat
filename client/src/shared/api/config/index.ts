@@ -1,6 +1,6 @@
 import axios, { AxiosError } from "axios";
 
-export const API_BASE_URL = `http://localhost:5000`;
+export const API_BASE_URL = `http://192.168.0.101:5000`;
 
 export const $api = axios.create({
   baseURL: API_BASE_URL,

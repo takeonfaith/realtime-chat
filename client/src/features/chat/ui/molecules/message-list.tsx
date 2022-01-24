@@ -55,6 +55,7 @@ const MessageList = ({ messages, isTyping }: Props) => {
                   width="32px"
                   height="32px"
                   marginRight="0"
+                  background="#ffffffa4"
                 />
               </div>
               <div className="messages">

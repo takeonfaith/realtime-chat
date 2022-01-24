@@ -22,12 +22,12 @@ const ChatItemWrapper = styled(Link)<{ isChosen: boolean }>`
     align-items: center;
     justify-content: center;
     width: 100%;
-    color: #fff;
+    color: ${({ isChosen }) => (isChosen ? "#fff" : "var(--text)")};
     width: 100%;
     padding: 10px;
     border-radius: var(--brLight);
     background: ${({ isChosen }) =>
-      isChosen ? Colors.blue.main : "transparent"};
+      isChosen ? "#5275fa" : "var(--list-of-chats)"};
     overflow: hidden;
     position: relative;
 
@@ -141,7 +141,13 @@ const ChatItem = ({
             {amountOfUnreadMessages}
           </div>
         )}
-        <Avatar avatar={avatar} width="45px" height="45px" marginRight="7px" />
+        <Avatar
+          avatar={avatar}
+          width="45px"
+          height="45px"
+          marginRight="7px"
+          background={params?.chatId === _id ? "#ffffffab" : undefined}
+        />
         <div className="name-and-message">
           <b>{isGroupChat ? chatName : getChatName(user?._id, users)}</b>
           {latestMessage && (

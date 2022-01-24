@@ -11,11 +11,13 @@ const ChatPageWrapper = styled.div`
   box-shadow: 0 0 300px #00000018;
   border-radius: 12px;
   overflow: hidden;
-  background: #232e78;
+  background: var(--theme-transparent-opposite);
+  backdrop-filter: blur(150px);
 
   @media (max-width: 1300px) {
     width: 100%;
     height: 100vh;
+    border-radius: 0px;
   }
 `;
 

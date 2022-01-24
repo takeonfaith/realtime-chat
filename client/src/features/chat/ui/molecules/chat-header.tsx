@@ -12,15 +12,15 @@ import LocalSearch from "../../../../shared/ui/molecules/local-search";
 import useModal from "../../../../widgets/modal";
 import User from "../../../../widgets/user";
 import getOtherUser from "../../lib/get-other-user";
+import searchChatMessages from "../../lib/search-chat-messages";
 
 const ChatHeaderWrapper = styled.div`
-  width: 100%;
   height: 50px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 10px;
-  background: #2e3f93;
+  padding: 0 6px;
+  background: var(--list-of-chats);
   position: relative;
   z-index: 2;
 `;
@@ -46,7 +46,7 @@ const ChatHeader = () => {
 
   return (
     <ChatHeaderWrapper ref={menuRef}>
-      <Button icon={<FiX />} onClick={handleClick} />
+      <Button icon={<FiX />} onClick={handleClick} background="transparent" />
       {!searchMode ? (
         <User
           avatar={""}
@@ -66,13 +66,18 @@ const ChatHeader = () => {
         />
       ) : (
         <LocalSearch
-          searchEngine={() => null}
-          setResult={() => null}
+          searchEngine={(
+            _: string,
+            value: string,
+            setResult: (params: any) => void
+          ) => searchChatMessages(selectedChat?._id ?? "", value, setResult)}
+          setResult={(messages: any) => console.log(messages)}
           placeholder="Поиск сообщений"
         />
       )}
       <Button
         icon={<FiMoreVertical />}
+        background="transparent"
         onClick={() =>
           contextMenuModel.events.open({
             content: (

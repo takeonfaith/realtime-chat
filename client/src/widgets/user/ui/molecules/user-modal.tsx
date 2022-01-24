@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { useModal } from "../../..";
 import { CHAT_ROUTE } from "../../../../app/routes/routes";
 import { chatModel } from "../../../../entities/chat";
+import { confirmModel } from "../../../../entities/confirm";
 import { userModel } from "../../../../entities/user";
 import ErrorMessage from "../../../../pages/login/ui/atoms/error-message";
 import { chatApi } from "../../../../shared/api";
@@ -94,8 +95,13 @@ const UserModal = ({ avatar, name, _id, status, login }: Props) => {
           <Button
             icon={<FiLogOut />}
             onClick={() => {
-              userModel.events.logout();
-              close();
+              confirmModel.events.evokeConfirm({
+                message: "Вы уверены, что хотите выйти?",
+                onConfirm: () => {
+                  userModel.events.logout();
+                  close();
+                },
+              });
             }}
             background={Colors.red.transparent}
             textColor={Colors.red.main}

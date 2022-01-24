@@ -70,6 +70,31 @@ export const fetchMessages = (chatId: string) => {
   return $api.get(`/api/message/${chatId}`, config);
 };
 
+export const searchAllMessages = (value: string, userId: string) => {
+  const { token } = JSON.parse(localStorage.getItem("token") ?? "null");
+  const config = {
+    headers: {
+      authorization: `Bearer ${token}`,
+    },
+    user: { _id: userId },
+  };
+
+  console.log(config);
+
+  return $api.get(`/api/message?query=${value}`, config);
+};
+
+export const searchChatMessages = (chatId: string, value: string) => {
+  const { token } = JSON.parse(localStorage.getItem("token") ?? "null");
+  const config = {
+    headers: {
+      authorization: `Bearer ${token}`,
+    },
+  };
+
+  return $api.get(`/api/message/${chatId}/search?query=${value}`, config);
+};
+
 export const addToGroup = (chatId: string, userId: string) => {
   const { token } = JSON.parse(localStorage.getItem("token") ?? "null");
   const config = {

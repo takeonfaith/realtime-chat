@@ -74,8 +74,6 @@ const createGroupChat = expressAsyncHandler(async (req, res) => {
 		return res.status(400).send("Пожалуйста, заполните все поля")
 	}
 
-	console.log(req.body.users);
-
 	let users = JSON.parse(req.body.users)
 
 	if (users.length < 2) {
