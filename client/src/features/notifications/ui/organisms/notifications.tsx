@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { NotificationList } from "..";
+import { FriendRequest, NotificationList } from "..";
 import { notificationModel } from "../../../../entities/notifications";
 import { Title } from "../../../../shared/ui/atoms";
 
@@ -20,6 +20,7 @@ const Notifications = () => {
       <Title size={3} align="left" bottomGap>
         Уведомления
       </Title>
+      <FriendRequest />
       <NotificationList />
     </NotificationsWrapper>
   );

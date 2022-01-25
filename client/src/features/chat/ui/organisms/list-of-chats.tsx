@@ -23,6 +23,7 @@ const ListOfChatsWrapper = styled.div<{ chatId?: string }>`
   height: 100%;
   background: var(--list-of-chats);
   color: var(--text);
+  margin-left: 70px;
 
   .search-and-button {
     display: flex;
@@ -74,7 +75,7 @@ const ListOfChats = () => {
     messages: Message[];
   } | null>(null);
   const {
-    data: { user },
+    data: { user, friendRequests },
   } = userModel.selectors.useUser();
   const {
     data: { notifications },
@@ -113,7 +114,7 @@ const ListOfChats = () => {
             icon={<FiBell />}
             background="transparent"
             largeIcon
-            notifications={notifications.length}
+            notifications={notifications.length + friendRequests.length}
           />
         }
       />

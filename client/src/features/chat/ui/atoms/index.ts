@@ -3,3 +3,4 @@ export { default as SkeletonLoading } from "./skeleton-loading";
 export { default as MessageItem } from "./message-item";
 export { default as TopDate } from "./top-date";
 export { default as EmptyHere } from "./empty-here";
+export { default as MessageLink } from "./message-link";

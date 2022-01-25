@@ -9,6 +9,7 @@ const ModalContent = styled.div<{ isOpen: boolean }>`
   border-radius: var(--brSemi);
   transition: 0.2s opacity, 0.2s transform;
   overflow: hidden;
+  position: relative;
 
   & > button {
     padding-left: 0;

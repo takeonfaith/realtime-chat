@@ -6,7 +6,7 @@ import { ChatModal, UserModal } from "../molecules";
 import { User as IUser } from "../../../../shared/api/model/user";
 import { Checkbox } from "../../../../shared/ui/atoms";
 
-const UserWrapper = styled.div`
+const UserWrapper = styled.div<{ selected: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -15,7 +15,8 @@ const UserWrapper = styled.div`
   color: var(--text);
   font-weight: 600;
   cursor: pointer;
-  transition: 0.1s background;
+  background: ${({ selected }) => selected && "var(--blue)"};
+  color: ${({ selected }) => selected && "#fff"};
 
   .user-inner {
     display: flex;
@@ -51,6 +52,7 @@ interface Props {
   added?: boolean;
   setAdded?: any;
   actionOnUser?: React.ReactNode;
+  selected?: boolean;
 }
 
 const LoadedUser = ({
@@ -63,6 +65,7 @@ const LoadedUser = ({
   added,
   setAdded,
   actionOnUser,
+  selected,
 }: Props) => {
   const { open } = useModal();
 
@@ -87,6 +90,7 @@ const LoadedUser = ({
   return (
     <UserWrapper
       className="user"
+      selected={selected ?? false}
       onClick={(e) => {
         open(
           type === "user" ? (

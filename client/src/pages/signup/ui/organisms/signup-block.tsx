@@ -11,8 +11,8 @@ const SignUpBlockWrapper = styled.div`
   flex-direction: column;
   width: 100%;
   max-width: 450px;
-  background: #3e4aa2;
-  color: #fff;
+  background: var(--theme);
+  color: var(--text);
   border-radius: 8px;
   padding: 20px;
   row-gap: 20px;
@@ -84,7 +84,7 @@ const SignUpBlock = () => {
         action={() => {
           signUpFunc({ name, login, password });
         }}
-        isLoading={loading}
+        isLoading={loading.signup}
         completed={false}
         setCompleted={() => null}
         isActive={!!password && !!login}

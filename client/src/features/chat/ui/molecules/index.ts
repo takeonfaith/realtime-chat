@@ -5,3 +5,4 @@ export { default as MessageList } from "./message-list";
 export { default as Attachments } from "./attachments";
 export { default as CreateGroupModal } from "./create-group-modal";
 export { default as AddToGroupModal } from "./add-to-group-modal";
+export { default as PinUser } from "./pin-user";

@@ -76,10 +76,7 @@ export const searchAllMessages = (value: string, userId: string) => {
     headers: {
       authorization: `Bearer ${token}`,
     },
-    user: { _id: userId },
   };
-
-  console.log(config);
 
   return $api.get(`/api/message?query=${value}`, config);
 };

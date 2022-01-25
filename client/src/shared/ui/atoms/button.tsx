@@ -18,7 +18,7 @@ const ButtonWrapper = styled.button<{
   align-items: center;
   justify-content: ${({ align }) => align ?? "center"};
   border: none;
-  color: ${({ textColor }) => (textColor ? textColor : "var(--text)")};
+  color: ${({ textColor }) => textColor ?? "var(--text)"};
   background: ${({ isChosen, background }) =>
     isChosen ? "var(--blue)" : background ?? "var(--scheduleBg)"};
   padding: 10px;

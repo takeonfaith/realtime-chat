@@ -1,13 +1,15 @@
 import { DefaultEventsMap } from "@socket.io/component-emitter";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ImAttachment } from "react-icons/im";
 import { IoMdSend } from "react-icons/io";
 import { Socket } from "socket.io-client";
 import styled from "styled-components";
+import { PinUser } from ".";
 import { chatModel } from "../../../../entities/chat";
 import { userModel } from "../../../../entities/user";
 import { chatApi } from "../../../../shared/api";
 import { Message } from "../../../../shared/api/model/message";
+import limitNumber from "../../../../shared/lib/limit-number";
 import { Button, Input, Loading } from "../../../../shared/ui/atoms";
 
 const ChatInputWrapper = styled.div`
@@ -16,6 +18,7 @@ const ChatInputWrapper = styled.div`
   background: var(--list-of-chats);
   padding: 5px 10px;
   z-index: 2;
+  position: relative;
 
   input {
     background: transparent;
@@ -38,9 +41,26 @@ const ChatInput = ({ chatId, setMessages, socket }: Props) => {
   const {
     data: { selectedChat },
   } = chatModel.selectors.useChats();
+  const [showPinUser, setShowPinUser] = useState(false);
+  const chatUsers = selectedChat?.users?.filter((u) => u._id !== user?._id);
+  const [chosenPinUser, setChosenPinUser] = useState(0);
+
+  const handleChosePinUser = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (showPinUser) {
+      if (e.key === "ArrowDown") {
+        setChosenPinUser((prev) =>
+          limitNumber(prev + 1, (chatUsers?.length ?? 0) - 1)
+        );
+      } else if (e.key === "ArrowUp") {
+        setChosenPinUser((prev) =>
+          limitNumber(prev - 1, (chatUsers?.length ?? 0) - 1)
+        );
+      }
+    }
+  };
 
   const send = async () => {
-    if (message.length && user && selectedChat) {
+    if (message.length && user && selectedChat && !showPinUser) {
       socket.emit("stop typing", chatId);
 
       try {
@@ -76,9 +96,16 @@ const ChatInput = ({ chatId, setMessages, socket }: Props) => {
   const keyDownHandle = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (!socket) return;
 
+    handleChosePinUser(e);
+
     if (e.key === "Enter") {
-      setTyping(false);
-      send();
+      if (showPinUser) {
+        setShowPinUser(false);
+        setMessage((prev) => prev + chatUsers?.[chosenPinUser].login);
+      } else {
+        setTyping(false);
+        send();
+      }
     }
 
     if (!typing) {
@@ -101,8 +128,26 @@ const ChatInput = ({ chatId, setMessages, socket }: Props) => {
     }, timerLength);
   };
 
+  useEffect(() => {
+    const messages = message.split("@");
+    messages.shift();
+
+    if (
+      !!message.length &&
+      !(messages.find((el) => el.length === 0) ?? true) &&
+      selectedChat?.isGroupChat
+    )
+      setShowPinUser(true);
+    else setShowPinUser(false);
+  }, [message]);
+
   return (
     <ChatInputWrapper onKeyDown={keyDownHandle}>
+      <PinUser
+        show={showPinUser ?? false}
+        users={chatUsers ?? []}
+        chosenUser={chosenPinUser}
+      />
       <Button
         icon={<ImAttachment />}
         onClick={() => null}

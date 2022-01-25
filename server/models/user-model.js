@@ -7,6 +7,13 @@ const userSchema = mongoose.Schema(
 		name: { type: String, required: true },
 		login: { type: String, required: true },
 		password: { type: String, required: true },
+		friends: [{
+			user: {
+				type: mongoose.Schema.Types.ObjectId,
+				ref: "User"
+				// 'requested' | 'added' | 'pending'
+			}, status: { type: String, required: true }
+		}],
 	}
 )
 

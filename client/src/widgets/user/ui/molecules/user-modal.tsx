@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { FiLogOut, FiMessageCircle } from "react-icons/fi";
+import {
+  FiLogOut,
+  FiMessageCircle,
+  FiUserCheck,
+  FiUserPlus,
+} from "react-icons/fi";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { useModal } from "../../..";
@@ -8,7 +13,7 @@ import { chatModel } from "../../../../entities/chat";
 import { confirmModel } from "../../../../entities/confirm";
 import { userModel } from "../../../../entities/user";
 import ErrorMessage from "../../../../pages/login/ui/atoms/error-message";
-import { chatApi } from "../../../../shared/api";
+import { chatApi, userApi } from "../../../../shared/api";
 import { Colors } from "../../../../shared/consts";
 import { Button, Loading, Status } from "../../../../shared/ui/atoms";
 import { Avatar } from "../../../../shared/ui/molecules";
@@ -56,12 +61,13 @@ interface Props {
 
 const UserModal = ({ avatar, name, _id, status, login }: Props) => {
   const {
-    data: { user },
+    data: { user, friendRequests },
   } = userModel.selectors.useUser();
   const { close } = useModal();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const history = useHistory();
+  const [addLoading, setAddLoading] = useState(false);
 
   const createChat = async () => {
     if (user?._id && _id) {
@@ -78,6 +84,17 @@ const UserModal = ({ avatar, name, _id, status, login }: Props) => {
         setLoading(false);
         setError("Не удалось создать чат");
       }
+    }
+  };
+
+  const addFriendHandle = async () => {
+    if (_id) {
+      try {
+        setAddLoading(true);
+        const { data } = await userApi.addFriend(_id);
+        userModel.events.addFriend({ friend: { _id, name, login } });
+        setAddLoading(false);
+      } catch (error) {}
     }
   };
 
@@ -116,6 +133,23 @@ const UserModal = ({ avatar, name, _id, status, login }: Props) => {
               textColor={Colors.blue.main}
               text="Написать"
             />
+            {!friendRequests.find((req) => req.user._id === _id) ? (
+              <Button
+                icon={addLoading ? <Loading width="14px" /> : <FiUserPlus />}
+                onClick={addFriendHandle}
+                background={Colors.green.transparent}
+                textColor={Colors.green.main}
+                text="Добавить"
+              />
+            ) : (
+              <Button
+                icon={addLoading ? <Loading width="14px" /> : <FiUserCheck />}
+                onClick={addFriendHandle}
+                background={Colors.green.transparent}
+                textColor={Colors.green.main}
+                text="Принять"
+              />
+            )}
           </>
         )}
       </div>

@@ -6,7 +6,6 @@ const searchChatMessages = async (
   setResult: (params: any) => any
 ) => {
   const { data } = await chatApi.searchChatMessages(chatId, value);
-  console.log(data);
 
   setResult(data);
 };

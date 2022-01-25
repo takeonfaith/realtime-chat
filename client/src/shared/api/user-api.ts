@@ -59,3 +59,13 @@ export const searchUsers = (value: string, userId: string) => {
 
   return $api.get<User[]>(`/api/user?search=${normalizeString(value)}`, config);
 };
+
+export const addFriend = (friendId: string) => {
+  const { token } = JSON.parse(localStorage.getItem("token") ?? "null");
+  const config = {
+    headers: {
+      authorization: `Bearer ${token}`,
+    },
+  };
+  return $api.post<User[]>(`/api/user/addFriend`, { friendId }, config);
+};

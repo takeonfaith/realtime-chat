@@ -9,7 +9,7 @@ const InputWrapper = styled.div<{ leftIcon: boolean }>`
   justify-content: space-between;
   position: relative;
   width: 100%;
-  color: #fff;
+  color: var(--text);
 
   h5 {
     margin-bottom: 5px;

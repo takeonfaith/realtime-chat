@@ -9,6 +9,10 @@ interface UserStore {
   currentUser: User | null;
   isAuthenticated: boolean | null;
   error: string | null;
+  friendRequests: {
+    user: { _id: string; name: string; login: string };
+    status: string;
+  }[];
 }
 
 const getUserTokenFx = createEffect<LoginData, UserToken>(
@@ -44,6 +48,8 @@ const getUserFx = createEffect<UserToken, UserStore>(
         currentUser: data,
         isAuthenticated: !!data,
         error: "",
+        friendRequests:
+          data?.friends?.filter((friend) => friend.status === "pending") ?? [],
       };
     } catch (error) {
       logout();
@@ -67,6 +73,7 @@ const signUpFx = createEffect<SignUpData, UserStore>(
         currentUser: data,
         isAuthenticated: true,
         error: null,
+        friendRequests: [],
       };
     } catch (error) {
       throw new Error("Не удалось зарегистрироваться");
@@ -84,6 +91,8 @@ const loginFx = createEffect<LoginData, UserStore>(
         currentUser: data,
         isAuthenticated: true,
         error: null,
+        friendRequests:
+          data?.friends?.filter((friend) => friend.status === "pending") ?? [],
       };
     } catch (error) {
       throw new Error("Не удалось войти");
@@ -92,10 +101,18 @@ const loginFx = createEffect<LoginData, UserStore>(
 );
 
 const useUser = () => {
-  const { currentUser: user, error, isAuthenticated } = useStore($userStore);
+  const {
+    currentUser: user,
+    error,
+    isAuthenticated,
+    friendRequests,
+  } = useStore($userStore);
   return {
-    data: { user, isAuthenticated: isAuthenticated },
-    loading: useStore(loginFx.pending || signUpFx.pending),
+    data: { user, isAuthenticated: isAuthenticated, friendRequests },
+    loading: {
+      login: useStore(loginFx.pending),
+      signup: useStore(signUpFx.pending),
+    },
     error: error,
   };
 };
@@ -107,6 +124,7 @@ const logoutFx = createEffect(() => {
 const login = createEvent<LoginData>();
 const signUp = createEvent<SignUpData>();
 const logout = createEvent();
+const addFriend = createEvent<{ friend: User }>();
 
 forward({ from: login, to: loginFx });
 forward({ from: logout, to: logoutFx });
@@ -118,10 +136,11 @@ const tokenInStorage = JSON.parse(localStorage.getItem("token") ?? "null");
 
 !!tokenInStorage && getUserFx(tokenInStorage);
 
-const initialStore = {
+const initialStore: UserStore = {
   currentUser: null,
   error: null,
   isAuthenticated: !!tokenInStorage,
+  friendRequests: [],
 };
 
 const $userStore = createStore<UserStore>(initialStore)
@@ -136,16 +155,31 @@ const $userStore = createStore<UserStore>(initialStore)
     error: newData.message,
     currentUser: null,
     isAuthenticated: null,
+    friendRequests: [],
   }))
   .on(getUserTokenFx.failData, (_, error) => ({
     isAuthenticated: null,
     currentUser: null,
     error: error.message,
+    friendRequests: [],
   }))
   .on(logout, () => ({
     error: "",
     isAuthenticated: null,
     currentUser: null,
+    friendRequests: [],
+  }))
+  .on(addFriend, (oldData, newData) => ({
+    ...oldData,
+    currentUser: oldData.currentUser
+      ? {
+          ...oldData.currentUser,
+          friends: [
+            ...(oldData.currentUser.friends ?? []),
+            { user: newData.friend, status: "requested" },
+          ],
+        }
+      : null,
   }));
 
 export const selectors = {
@@ -156,6 +190,7 @@ export const events = {
   login,
   logout,
   signUp,
+  addFriend,
 };
 
 export const effects = {

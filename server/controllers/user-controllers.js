@@ -41,7 +41,7 @@ const registerUser = expressAsyncHandler(async (req, res) => {
 const authUser = expressAsyncHandler(async (req, res) => {
 	const { login, password } = req.body
 
-	const user = await User.findOne({ login })
+	const user = await User.findOne({ login }).populate("friends.user", 'name login')
 
 
 	if (user && (await user.matchPassword(password))) {
@@ -49,6 +49,7 @@ const authUser = expressAsyncHandler(async (req, res) => {
 			_id: user._id,
 			name: user.name,
 			login: user.login,
+			friends: user.friends,
 			token: generateToken(user.id)
 		})
 	}
@@ -64,7 +65,7 @@ const getUserByToken = expressAsyncHandler(async (req, res) => {
 		try {
 			token = req.headers.authorization.split(" ")[1]
 			const decoded = jwt.verify(token, process.env.JWT_SECRET)
-			const user = await User.findById(decoded.id).select("-password")
+			const user = await User.findById(decoded.id).populate('friends.user', 'name login').select("-password")
 
 			res.send(user)
 		} catch (error) {
@@ -94,5 +95,26 @@ const allUsers = expressAsyncHandler(async (req, res) => {
 	res.send(users)
 })
 
+const addFriend = expressAsyncHandler(async (req, res) => {
+	try {
+		// console.log('user', req.user, req.body.friendId);
 
-module.exports = { registerUser, authUser, getUserByToken, allUsers }
+		const { user } = req
+
+		await User.findByIdAndUpdate(user._id, {
+			$push: { friends: { user: req.body.friendId, status: 'requested' } }
+		}, { new: true })
+		await User.findByIdAndUpdate(req.body.friendId, {
+			$push: { friends: { user: user._id, status: 'pending' } }
+		}, { new: true })
+
+		res.sendStatus(200)
+
+	} catch (error) {
+		res.sendStatus(400)
+		console.log(error.message);
+	}
+})
+
+
+module.exports = { registerUser, authUser, getUserByToken, allUsers, addFriend }

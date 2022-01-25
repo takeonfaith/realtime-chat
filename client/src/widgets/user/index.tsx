@@ -13,6 +13,7 @@ interface Props {
   added?: boolean;
   setAdded?: React.Dispatch<React.SetStateAction<IUser[]>>;
   actionOnUser?: React.ReactNode;
+  selected?: boolean;
 }
 
 const User = (props: Props) => {

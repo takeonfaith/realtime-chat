@@ -12,7 +12,7 @@ const GlobalStyles = createGlobalStyle`
 	body {
 		overflow: hidden;
 		/* https://images8.alphacoders.com/978/978576.jpg */
-		background-image: url("https://images5.alphacoders.com/113/1132429.jpg");
+		background-image: url("https://images.hdqwalls.com/wallpapers/last-dreamy-night-4k-79.jpg");
 		background-size: cover;
 	}
 

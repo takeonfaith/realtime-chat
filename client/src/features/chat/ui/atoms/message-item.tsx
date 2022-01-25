@@ -1,6 +1,8 @@
 import React from "react";
 import { FiCornerUpLeft, FiCornerUpRight, FiX } from "react-icons/fi";
 import styled from "styled-components";
+import { MessageLink } from ".";
+import { chatModel } from "../../../../entities/chat";
 import { contextMenuModel } from "../../../../entities/context-menu";
 import { userModel } from "../../../../entities/user";
 import { Message } from "../../../../shared/api/model/message";
@@ -39,6 +41,21 @@ const MessageItemWrapper = styled.div<{
     max-width: 40%;
     position: relative;
 
+    @keyframes send {
+      0% {
+        transform: translateY(50px) scale(1.05);
+        background: transparent;
+        opacity: 0;
+        z-index: 100;
+      }
+      100% {
+        transform: translate(0%) scale(1);
+        background: ${({ isYourMessage }) =>
+          isYourMessage ? "var(--reallyBlue)" : "var(--theme)"};
+        opacity: 1;
+      }
+    }
+
     .name-and-time {
       b {
         color: ${({ isYourMessage }) =>
@@ -76,6 +93,9 @@ const MessageItem = ({ name, message, isLast }: Props) => {
   const {
     data: { user },
   } = userModel.selectors.useUser();
+  const {
+    data: { selectedChat },
+  } = chatModel.selectors.useChats();
 
   const handleRightClick = () => {
     contextMenuModel.events.open({
@@ -110,6 +130,43 @@ const MessageItem = ({ name, message, isLast }: Props) => {
     });
   };
 
+  const prepareContent = (value: string) => {
+    const words = value.split(/\s/g);
+    let result: React.ReactNode[] = [];
+    for (let i = 0; i < words.length; i++) {
+      const word = words[i];
+      if (word.includes("@") || word.includes("#") || word.includes("http")) {
+        if (word[word.length - 1] !== ",") {
+          result.push(
+            <MessageLink
+              text={word}
+              isYourMessage={user?._id === message.sender._id}
+              user={selectedChat?.users.find(
+                (user) => "@" + user.login === word
+              )}
+              isRealLink={word.includes("http")}
+            />
+          );
+        } else {
+          result.push(
+            <MessageLink
+              text={word.substring(0, word.length - 1)}
+              isYourMessage={user?._id === message.sender._id}
+              user={selectedChat?.users.find(
+                (user) =>
+                  "@" + user.login === word.substring(0, word.length - 1)
+              )}
+              isRealLink={word.includes("http")}
+            />
+          );
+        }
+      } else result.push(" " + word);
+    }
+    return result;
+  };
+
+  // prepareContent(message.content ?? "");
+
   if (!user) return null;
 
   return (
@@ -125,7 +182,7 @@ const MessageItem = ({ name, message, isLast }: Props) => {
             {getMessageReceivedIcon(message.received)}
           </span>
         </div>
-        <span className="message">{message.content}</span>
+        <span className="message">{prepareContent(message.content ?? "")}</span>
       </div>
     </MessageItemWrapper>
   );
