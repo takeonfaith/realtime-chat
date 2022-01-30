@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import {
   FiLogOut,
   FiMessageCircle,
+  FiMinusCircle,
   FiUserCheck,
+  FiUserMinus,
   FiUserPlus,
 } from "react-icons/fi";
 import { useHistory } from "react-router-dom";
@@ -133,7 +135,7 @@ const UserModal = ({ avatar, name, _id, status, login }: Props) => {
               textColor={Colors.blue.main}
               text="Написать"
             />
-            {!friendRequests.find((req) => req.user._id === _id) ? (
+            {!user?.friends?.find((friend) => friend.user._id === _id) ? (
               <Button
                 icon={addLoading ? <Loading width="14px" /> : <FiUserPlus />}
                 onClick={addFriendHandle}
@@ -141,13 +143,34 @@ const UserModal = ({ avatar, name, _id, status, login }: Props) => {
                 textColor={Colors.green.main}
                 text="Добавить"
               />
-            ) : (
+            ) : !!user?.friends?.find(
+                (friend) =>
+                  friend.user._id === _id && friend.status === "pending"
+              ) ? (
               <Button
                 icon={addLoading ? <Loading width="14px" /> : <FiUserCheck />}
                 onClick={addFriendHandle}
                 background={Colors.green.transparent}
                 textColor={Colors.green.main}
                 text="Принять"
+              />
+            ) : !!user?.friends?.find(
+                (friend) => friend.user._id === _id && friend.status === "added"
+              ) ? (
+              <Button
+                icon={addLoading ? <Loading width="14px" /> : <FiUserMinus />}
+                onClick={addFriendHandle}
+                background={Colors.red.transparent}
+                textColor={Colors.red.main}
+                text="Удалить"
+              />
+            ) : (
+              <Button
+                icon={addLoading ? <Loading width="14px" /> : <FiMinusCircle />}
+                onClick={addFriendHandle}
+                background={Colors.pink.transparent}
+                textColor={Colors.pink.main}
+                text="Отменить"
               />
             )}
           </>

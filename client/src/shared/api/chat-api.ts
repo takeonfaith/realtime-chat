@@ -50,14 +50,22 @@ export const renameGroup = (chatId: string, chatName: string) => {
   return $api.put<Chat>("/api/chat/rename", { chatId, chatName }, config);
 };
 
-export const sendMessage = (content: string, chatId: string) => {
+export const sendMessage = (
+  content: string,
+  chatId: string,
+  forwardedMessages?: string[]
+) => {
   const { token } = JSON.parse(localStorage.getItem("token") ?? "null");
   const config = {
     headers: {
       authorization: `Bearer ${token}`,
     },
   };
-  return $api.post<Message>("/api/message/", { content, chatId }, config);
+  return $api.post<Message>(
+    "/api/message/",
+    { content, chatId, forwardedMessages },
+    config
+  );
 };
 
 export const fetchMessages = (chatId: string) => {

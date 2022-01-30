@@ -19,12 +19,14 @@ interface Props {
   value: string;
   setValue: (value: string) => void;
   placeholder?: string;
-  action: () => void;
-  loading: boolean;
-  completed: boolean;
-  setCompleted: (completed: boolean) => void;
-  isActive: boolean;
+  action?: () => void;
+  loading?: boolean;
+  completed?: boolean;
+  setCompleted?: (completed: boolean) => void;
+  isActive?: boolean;
   ableToChange: boolean;
+  submit?: boolean;
+  background?: string;
 }
 
 const RenameField = ({
@@ -37,6 +39,8 @@ const RenameField = ({
   setCompleted,
   isActive,
   ableToChange,
+  background,
+  submit = true,
 }: Props) => {
   const [isInput, setIsInput] = useState(false);
   const fieldRef = useRef<HTMLDivElement>(null);
@@ -52,15 +56,24 @@ const RenameField = ({
     >
       {isInput && ableToChange ? (
         <div className="input-and-button">
-          <Input value={value} setValue={setValue} placeholder={placeholder} />
-          <SubmitButton
-            text={"Изменить"}
-            action={action}
-            isLoading={loading}
-            completed={completed}
-            setCompleted={setCompleted}
-            isActive={isActive}
+          <Input
+            value={value}
+            setValue={setValue}
+            placeholder={placeholder}
+            background={background}
           />
+          {submit && (
+            <SubmitButton
+              text={"Изменить"}
+              action={() => (!!action ? action() : null)}
+              isLoading={loading ?? false}
+              completed={completed ?? false}
+              setCompleted={(completed: boolean) =>
+                setCompleted ? setCompleted(completed) : null
+              }
+              isActive={isActive ?? false}
+            />
+          )}
         </div>
       ) : (
         <b>{value}</b>

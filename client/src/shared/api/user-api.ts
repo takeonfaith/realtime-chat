@@ -69,3 +69,23 @@ export const addFriend = (friendId: string) => {
   };
   return $api.post<User[]>(`/api/user/addFriend`, { friendId }, config);
 };
+
+export const acceptFriend = (friendId: string) => {
+  const { token } = JSON.parse(localStorage.getItem("token") ?? "null");
+  const config = {
+    headers: {
+      authorization: `Bearer ${token}`,
+    },
+  };
+  return $api.post<User[]>(`/api/user/acceptFriend`, { friendId }, config);
+};
+
+export const rejectFriend = (friendId: string) => {
+  const { token } = JSON.parse(localStorage.getItem("token") ?? "null");
+  const config = {
+    headers: {
+      authorization: `Bearer ${token}`,
+    },
+  };
+  return $api.post<User[]>(`/api/user/rejectFriend`, { friendId }, config);
+};

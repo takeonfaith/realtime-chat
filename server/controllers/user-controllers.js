@@ -97,8 +97,6 @@ const allUsers = expressAsyncHandler(async (req, res) => {
 
 const addFriend = expressAsyncHandler(async (req, res) => {
 	try {
-		// console.log('user', req.user, req.body.friendId);
-
 		const { user } = req
 
 		await User.findByIdAndUpdate(user._id, {
@@ -116,5 +114,45 @@ const addFriend = expressAsyncHandler(async (req, res) => {
 	}
 })
 
+const acceptFriend = expressAsyncHandler(async (req, res) => {
+	try {
+		const { user } = req
 
-module.exports = { registerUser, authUser, getUserByToken, allUsers, addFriend }
+		const userFriends = await User.findById(user._id)
+		const friendFriends = await User.findById(req.body.friendId)
+		console.log(userFriends.friends);
+		userFriends.friends.find((friend) => friend.user.equals(req.body.friendId)).status = 'added'
+		friendFriends.friends.find((friend) => friend.user.equals(user._id)).status = 'added'
+
+		console.log(userFriends);
+
+		if (!!userFriends.friends.length && !!friendFriends.friends.length) {
+			await User.findByIdAndUpdate(user._id, { friends: userFriends.friends })
+			await User.findByIdAndUpdate(req.body.friendId, { friends: friendFriends.friends },)
+		}
+
+		res.sendStatus(200)
+
+	} catch (error) {
+		res.sendStatus(400)
+		console.log(error.message);
+	}
+})
+
+const rejectFriend = expressAsyncHandler(async (req, res) => {
+	try {
+		const { user } = req
+
+		await User.findByIdAndUpdate(user._id, { friends: { user: req.body.friendId, status: 'rejected' } })
+		await User.findByIdAndUpdate(req.body.friendId, { friends: { user: user._id, status: 'rejected' } })
+
+		res.sendStatus(200)
+
+	} catch (error) {
+		res.sendStatus(400)
+		console.log(error.message);
+	}
+})
+
+
+module.exports = { registerUser, authUser, getUserByToken, allUsers, addFriend, acceptFriend, rejectFriend }

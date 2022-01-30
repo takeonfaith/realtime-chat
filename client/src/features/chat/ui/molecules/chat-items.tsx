@@ -17,9 +17,17 @@ interface Props {
   chats: { chats: Chat[]; users: IUser[]; messages: Message[] };
   loading: boolean;
   addMode?: boolean;
+  chosenChats?: Chat[];
+  setChosenChats?: React.Dispatch<React.SetStateAction<Chat[]>>;
 }
 
-const ChatItems = ({ chats, loading = false, addMode = false }: Props) => {
+const ChatItems = ({
+  chats,
+  chosenChats,
+  setChosenChats,
+  loading = false,
+  addMode = false,
+}: Props) => {
   const { height } = useResize();
   const {
     data: { notifications },
@@ -61,6 +69,8 @@ const ChatItems = ({ chats, loading = false, addMode = false }: Props) => {
             ).length
           }
           addMode={addMode}
+          chosenChats={chosenChats}
+          setChosenChats={setChosenChats}
         />
       ))}
 

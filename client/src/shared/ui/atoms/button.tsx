@@ -13,6 +13,7 @@ const ButtonWrapper = styled.button<{
   largeIcon: boolean;
   direction: "horizontal" | "vertical";
   align?: "left" | "center" | "right";
+  isActive: boolean;
 }>`
   display: flex;
   align-items: center;
@@ -25,11 +26,12 @@ const ButtonWrapper = styled.button<{
   border-radius: 7px;
   cursor: pointer;
   font-weight: bold;
-  transition: 0.2s transform;
+  transition: 0.2s transform, 0.2s opacity;
   width: ${({ width }) => (width ? width : "fit-content")};
   text-decoration: none;
   flex-direction: ${({ direction }) => direction === "vertical" && "column"};
   position: relative;
+  opacity: ${({ isActive }) => !isActive && 0.6};
 
   &:focus {
     outline: 4px solid var(--almostTransparentOpposite);
@@ -95,6 +97,7 @@ interface Props extends React.HTMLAttributes<HTMLButtonElement> {
   restProps?: any | unknown;
   largeIcon?: boolean;
   notifications?: number;
+  isActive?: boolean;
 }
 
 const Button = ({
@@ -110,13 +113,14 @@ const Button = ({
   direction = "horizontal",
   shrinkTextInMobile = false,
   largeIcon = false,
+  isActive = true,
   notifications,
   ...restProps
 }: Props) => {
   return (
     <ButtonWrapper
       text={!!text}
-      onClick={onClick}
+      onClick={(e) => isActive && onClick(e)}
       isChosen={isChosen}
       width={width}
       background={background}
@@ -126,6 +130,7 @@ const Button = ({
       align={align}
       direction={direction}
       largeIcon={largeIcon}
+      isActive={isActive}
       {...restProps}
     >
       <NotificationsAmount amount={notifications} />

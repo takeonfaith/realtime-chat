@@ -2,6 +2,7 @@ import { createEffect, createEvent, createStore } from "effector";
 import { useStore } from "effector-react";
 import { getUserChats } from "../../../shared/api/chat-api";
 import { Chat } from "../../../shared/api/model";
+import { Message } from "../../../shared/api/model/message";
 
 const useChats = () => {
   return {
@@ -22,15 +23,19 @@ const getChatsFx = createEffect(async (userId: string): Promise<Chat[]> => {
 });
 
 const changeSelectedChat = createEvent<{ chat: Chat }>();
+const addSelectedMessages = createEvent<{ message: Message }>();
+const clearAllselectedMessage = createEvent();
 
 interface ChatStore {
   chats: Chat[];
   selectedChat: Chat | null;
+  selectedMessages: Message[];
 }
 
 const initialStore: ChatStore = {
   chats: [],
   selectedChat: null,
+  selectedMessages: [],
 };
 
 const $chatStore = createStore(initialStore)
@@ -41,6 +46,20 @@ const $chatStore = createStore(initialStore)
   .on(changeSelectedChat, (oldData, newData) => ({
     ...oldData,
     selectedChat: newData.chat,
+  }))
+  .on(addSelectedMessages, (oldData, newData) => ({
+    ...oldData,
+    selectedMessages: !!oldData.selectedMessages.find(
+      (message) => message._id === newData.message._id
+    )
+      ? oldData.selectedMessages.filter(
+          (message) => message._id !== newData.message._id
+        )
+      : [...oldData.selectedMessages, newData.message],
+  }))
+  .on(clearAllselectedMessage, (oldData, newData) => ({
+    ...oldData,
+    selectedMessages: [],
   }));
 
 export const selectors = {
@@ -53,4 +72,6 @@ export const effects = {
 
 export const events = {
   changeSelectedChat,
+  clearAllselectedMessage,
+  addSelectedMessages,
 };

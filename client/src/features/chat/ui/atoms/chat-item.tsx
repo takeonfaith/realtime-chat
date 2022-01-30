@@ -16,6 +16,14 @@ const ChatItemWrapper = styled(Link)<{ isChosen: boolean }>`
   text-decoration: none;
   display: flex;
   align-items: center;
+  position: relative;
+
+  .chosen-chat-checkbox {
+    position: absolute;
+    top: 28px;
+    left: 30px;
+    z-index: 2;
+  }
 
   .chat-item-content {
     display: flex;
@@ -73,6 +81,11 @@ const ChatItemWrapper = styled(Link)<{ isChosen: boolean }>`
         white-space: nowrap;
         text-overflow: ellipsis;
         max-width: 200px;
+
+        .forwarded-message {
+          color: ${({ isChosen }) =>
+            !isChosen ? "var(--reallyBlue)" : "#fff"};
+        }
       }
     }
 
@@ -94,6 +107,8 @@ type Props = Chat & {
   amountOfUnreadMessages: number;
   avatar?: string;
   addMode: boolean;
+  chosenChats?: Chat[];
+  setChosenChats?: React.Dispatch<React.SetStateAction<Chat[]>>;
 };
 
 const ChatItem = ({
@@ -107,6 +122,8 @@ const ChatItem = ({
   amountOfUnreadMessages,
   avatar,
   addMode,
+  chosenChats,
+  setChosenChats,
 }: Props) => {
   const {
     data: { user },
@@ -117,24 +134,53 @@ const ChatItem = ({
 
   if (!user) return null;
 
+  const handleCheck = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    e.preventDefault();
+    if (!!chosenChats && setChosenChats) {
+      if (!!chosenChats.find((chat) => chat._id === _id)) {
+        setChosenChats((prev) => prev.filter((chat) => chat._id !== _id));
+      } else {
+        setChosenChats((prev) => [
+          ...prev,
+          { _id, chatName, isGroupChat, groupAdmin, latestMessage, users },
+        ]);
+      }
+    }
+  };
+
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    if (!chosenChats) {
+      chatModel.events.changeSelectedChat({
+        chat: {
+          _id,
+          chatName,
+          groupAdmin,
+          isGroupChat,
+          latestMessage,
+          users,
+        },
+      });
+    } else {
+      e.preventDefault();
+      handleCheck(e as any);
+    }
+  };
+
   return !loading ? (
     <ChatItemWrapper
       to={`${CHAT_ROUTE}/${_id}`}
-      onClick={() =>
-        chatModel.events.changeSelectedChat({
-          chat: {
-            _id,
-            chatName,
-            groupAdmin,
-            isGroupChat,
-            latestMessage,
-            users,
-          },
-        })
-      }
-      isChosen={params?.chatId === _id}
+      onClick={handleClick}
+      isChosen={params?.chatId === _id && !chosenChats}
     >
-      {addMode && <Checkbox checked={false} setChecked={() => null} />}
+      {!!chosenChats && (
+        <div className="chosen-chat-checkbox">
+          <Checkbox
+            checked={!!chosenChats.find((chat) => chat._id === _id)}
+            setChecked={handleCheck}
+            invisibleOnFalse
+          />
+        </div>
+      )}
       <div className="chat-item-content">
         {amountOfUnreadMessages !== 0 && (
           <div className="amount-of-unread-messages">
@@ -146,12 +192,20 @@ const ChatItem = ({
           width="45px"
           height="45px"
           marginRight="7px"
-          background={params?.chatId === _id ? "#ffffffab" : undefined}
+          background={
+            params?.chatId === _id && !chosenChats ? "#ffffffab" : undefined
+          }
         />
         <div className="name-and-message">
           <b>{isGroupChat ? chatName : getChatName(user?._id, users)}</b>
           {latestMessage && (
-            <div className="last-message">{latestMessage.content}</div>
+            <div className="last-message">
+              {latestMessage.content}
+              <span className="forwarded-message">
+                {!!latestMessage.forwardedMessages.length &&
+                  " Пересланное сообщение"}
+              </span>
+            </div>
           )}
         </div>
         {latestMessage && (

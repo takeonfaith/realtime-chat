@@ -1,24 +1,23 @@
 import React from "react";
-import { FiCornerUpLeft, FiCornerUpRight, FiX } from "react-icons/fi";
 import styled from "styled-components";
-import { MessageLink } from ".";
+import { ForwardedMessage, MessageContextMenu } from ".";
 import { chatModel } from "../../../../entities/chat";
 import { contextMenuModel } from "../../../../entities/context-menu";
 import { userModel } from "../../../../entities/user";
 import { Message } from "../../../../shared/api/model/message";
 import localizeDate from "../../../../shared/lib/localize-date";
-import { Button } from "../../../../shared/ui/atoms";
 import getMessageReceivedIcon from "../../lib/get-message-received-icon";
-import ShareMessage from "../molecules/share-message";
+import prepareContent from "../../lib/prepare-content";
 
 const MessageItemWrapper = styled.div<{
   isYourMessage: boolean;
   isLast: boolean;
+  isSelected: boolean;
 }>`
   display: flex;
   align-items: flex-end;
   padding: ${({ isLast }) => (!isLast ? "2px 0" : "2px 0 10px 0")};
-  position: static;
+  position: relative;
 
   .message-avatar {
     width: 32px;
@@ -29,10 +28,21 @@ const MessageItemWrapper = styled.div<{
     top: 0px;
   }
 
+  &::before {
+    content: "";
+    position: absolute;
+    display: block;
+    top: 0;
+    left: -50px;
+    background: ${({ isSelected }) => isSelected && "#7272f836"};
+    width: calc(100% + 60px);
+    height: 100%;
+  }
+
   .name-and-message {
     display: flex;
     flex-direction: column;
-    background: ${({ isYourMessage }) =>
+    background: ${({ isYourMessage, isSelected }) =>
       isYourMessage ? "var(--reallyBlue)" : "var(--theme)"};
     color: ${({ isYourMessage }) => (isYourMessage ? "#fff" : "var(--text)")};
     padding: 7px;
@@ -84,88 +94,23 @@ const MessageItemWrapper = styled.div<{
 `;
 
 interface Props {
-  name: string;
   message: Message;
   isLast: boolean;
 }
 
-const MessageItem = ({ name, message, isLast }: Props) => {
+const MessageItem = ({ message, isLast }: Props) => {
   const {
     data: { user },
   } = userModel.selectors.useUser();
   const {
-    data: { selectedChat },
+    data: { selectedChat, selectedMessages },
   } = chatModel.selectors.useChats();
 
   const handleRightClick = () => {
     contextMenuModel.events.open({
-      content: (
-        <>
-          <Button
-            icon={<FiCornerUpLeft />}
-            text={"Ответить"}
-            onClick={() => null}
-            width="100%"
-            align="left"
-            background="transparent"
-          />
-          <Button
-            icon={<FiCornerUpRight />}
-            text={"Переслать"}
-            onClick={() => <ShareMessage message={message} />}
-            width="100%"
-            align="left"
-            background="transparent"
-          />
-          <Button
-            icon={<FiX />}
-            text={"Удалить"}
-            onClick={() => null}
-            width="100%"
-            align="left"
-            background="transparent"
-          />
-        </>
-      ),
+      content: <MessageContextMenu message={message} />,
     });
   };
-
-  const prepareContent = (value: string) => {
-    const words = value.split(/\s/g);
-    let result: React.ReactNode[] = [];
-    for (let i = 0; i < words.length; i++) {
-      const word = words[i];
-      if (word.includes("@") || word.includes("#") || word.includes("http")) {
-        if (word[word.length - 1] !== ",") {
-          result.push(
-            <MessageLink
-              text={word}
-              isYourMessage={user?._id === message.sender._id}
-              user={selectedChat?.users.find(
-                (user) => "@" + user.login === word
-              )}
-              isRealLink={word.includes("http")}
-            />
-          );
-        } else {
-          result.push(
-            <MessageLink
-              text={word.substring(0, word.length - 1)}
-              isYourMessage={user?._id === message.sender._id}
-              user={selectedChat?.users.find(
-                (user) =>
-                  "@" + user.login === word.substring(0, word.length - 1)
-              )}
-              isRealLink={word.includes("http")}
-            />
-          );
-        }
-      } else result.push(" " + word);
-    }
-    return result;
-  };
-
-  // prepareContent(message.content ?? "");
 
   if (!user) return null;
 
@@ -173,16 +118,27 @@ const MessageItem = ({ name, message, isLast }: Props) => {
     <MessageItemWrapper
       isYourMessage={user._id === message.sender._id}
       isLast={isLast}
+      isSelected={!!selectedMessages.find((m) => m._id === message._id)}
+      onClick={() =>
+        !!selectedMessages.length &&
+        chatModel.events.addSelectedMessages({ message })
+      }
+      onDoubleClick={() => chatModel.events.addSelectedMessages({ message })}
     >
       <div className="name-and-message" onContextMenu={handleRightClick}>
         <div className="name-and-time">
-          <b>{name}</b>
+          <b>{message.sender.name}</b>
           <span>
             {localizeDate(message.createdAt, "hours")}{" "}
             {getMessageReceivedIcon(message.received)}
           </span>
         </div>
-        <span className="message">{prepareContent(message.content ?? "")}</span>
+        {message.forwardedMessages.map((message) => {
+          return <ForwardedMessage message={message} key={message._id} />;
+        })}
+        <span className="message">
+          {prepareContent(message.content ?? "", message, selectedChat, user)}
+        </span>
       </div>
     </MessageItemWrapper>
   );

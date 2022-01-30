@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { FiMoreVertical, FiSearch, FiX } from "react-icons/fi";
+import { FiCornerUpLeft, FiMoreVertical, FiSearch, FiX } from "react-icons/fi";
 import { ImAttachment } from "react-icons/im";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
@@ -7,12 +7,14 @@ import { Attachments } from ".";
 import { chatModel } from "../../../../entities/chat";
 import { contextMenuModel } from "../../../../entities/context-menu";
 import { userModel } from "../../../../entities/user";
+import { Colors } from "../../../../shared/consts";
 import { Button } from "../../../../shared/ui/atoms";
 import LocalSearch from "../../../../shared/ui/molecules/local-search";
 import useModal from "../../../../widgets/modal";
 import User from "../../../../widgets/user";
 import getOtherUser from "../../lib/get-other-user";
 import searchChatMessages from "../../lib/search-chat-messages";
+import ShareMessage from "./share-message";
 
 const ChatHeaderWrapper = styled.div`
   height: 50px;
@@ -23,6 +25,15 @@ const ChatHeaderWrapper = styled.div`
   background: var(--list-of-chats);
   position: relative;
   z-index: 2;
+
+  .buttons {
+    display: flex;
+    align-items: center;
+
+    & > * + * {
+      margin-left: 10px;
+    }
+  }
 `;
 
 const ChatHeader = () => {
@@ -30,7 +41,7 @@ const ChatHeader = () => {
   const [searchMode, setSearchMode] = useState(false);
   const { open } = useModal();
   const {
-    data: { selectedChat },
+    data: { selectedChat, selectedMessages },
   } = chatModel.selectors.useChats();
   const {
     data: { user },
@@ -44,7 +55,7 @@ const ChatHeader = () => {
 
   if (!user?._id) return null;
 
-  return (
+  return !selectedMessages.length ? (
     <ChatHeaderWrapper ref={menuRef}>
       <Button icon={<FiX />} onClick={handleClick} background="transparent" />
       {!searchMode ? (
@@ -104,6 +115,30 @@ const ChatHeader = () => {
             ),
           })
         }
+      />
+    </ChatHeaderWrapper>
+  ) : (
+    <ChatHeaderWrapper>
+      <div className="buttons">
+        <Button
+          onClick={() => open(<ShareMessage messages={selectedMessages} />)}
+          icon={<FiCornerUpLeft />}
+          text="Переслать"
+          background={Colors.blue.transparent}
+          textColor={Colors.blue.main}
+        />
+        <Button
+          onClick={() => open(<ShareMessage messages={selectedMessages} />)}
+          icon={<FiX />}
+          text="Удалить"
+          background={Colors.red.transparent}
+          textColor={Colors.red.main}
+        />
+      </div>
+      <Button
+        onClick={() => chatModel.events.clearAllselectedMessage()}
+        icon={<FiX />}
+        text="Отменить"
       />
     </ChatHeaderWrapper>
   );

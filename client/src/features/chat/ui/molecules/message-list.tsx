@@ -62,7 +62,6 @@ const MessageList = ({ messages, isTyping }: Props) => {
                 {messages.messages.map((message, i) => {
                   return (
                     <MessageItem
-                      name={message.sender.name}
                       message={message}
                       key={i}
                       isLast={i === messages.messages.length - 1}

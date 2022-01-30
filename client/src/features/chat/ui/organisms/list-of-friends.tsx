@@ -61,21 +61,24 @@ const ListOfFriends = () => {
   } = userModel.selectors.useUser();
   const [chats, setChats] = useState<Chat[]>([]);
   const [open, setOpen] = useState(false);
+
   return (
     <ListOfFriendsWrapper>
       <div className="friends-list">
         <FiUsers className="icon" />
         {/* {!friends.length && <b>Вы не добавили друзей</b>} */}
-        {user?.friends?.map((friend) => {
-          return (
-            <Avatar
-              width="40px"
-              height="40px"
-              marginRight="0"
-              key={friend.user._id}
-            />
-          );
-        })}
+        {user?.friends
+          ?.filter((friend) => friend.status === "added")
+          ?.map((friend) => {
+            return (
+              <Avatar
+                width="40px"
+                height="40px"
+                marginRight="0"
+                key={friend.user._id}
+              />
+            );
+          })}
       </div>
     </ListOfFriendsWrapper>
   );

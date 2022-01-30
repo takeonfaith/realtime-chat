@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { userModel } from "../../../../entities/user";
 import { User as IUser } from "../../../../shared/api/model";
@@ -25,8 +25,16 @@ interface Props {
 }
 
 const PinUser = ({ show, users, chosenUser }: Props) => {
+  const tagRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (tagRef?.current) {
+      tagRef.current.scrollTop = 48 * chosenUser;
+    }
+  }, [chosenUser]);
+
   return (
-    <PinUserWrapper show={show}>
+    <PinUserWrapper show={show} ref={tagRef}>
       {users.map((user, i) => {
         return (
           <User

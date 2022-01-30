@@ -4,6 +4,7 @@ import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { CHAT_ROUTE } from "../../../../app/routes/routes";
 import { chatModel } from "../../../../entities/chat";
+import { userModel } from "../../../../entities/user";
 import ErrorMessage from "../../../../pages/login/ui/atoms/error-message";
 import { chatApi } from "../../../../shared/api";
 import { User as IUser } from "../../../../shared/api/model";
@@ -67,7 +68,16 @@ const CreateGroupModalWrapper = styled.div`
 `;
 
 const CreateGroupModal = () => {
-  const [foundUsers, setFoundUsers] = useState<IUser[]>([]);
+  const {
+    data: { user },
+  } = userModel.selectors.useUser();
+
+  const friends = user?.friends?.reduce((acc, friend) => {
+    if (friend.status === "added") acc.push(friend.user);
+    return acc;
+  }, [] as IUser[]);
+
+  const [foundUsers, setFoundUsers] = useState<IUser[]>(friends ?? []);
   const [addedUsers, setAddedUsers] = useState<IUser[]>([]);
   const [chatName, setChatName] = useState("");
   const [loading, setLoading] = useState(false);
@@ -126,9 +136,22 @@ const CreateGroupModal = () => {
         })}
       </div>
       <div className="users-list">
+        {!foundUsers?.length &&
+          friends?.map((friend) => {
+            return (
+              <User
+                key={friend._id}
+                {...friend}
+                status="online"
+                setAdded={setAddedUsers}
+                added={!!addedUsers.find((u: IUser) => u._id === friend._id)}
+              />
+            );
+          })}
         {foundUsers?.map((user) => {
           return (
             <User
+              key={user._id}
               {...user}
               status="online"
               setAdded={setAddedUsers}
@@ -137,25 +160,22 @@ const CreateGroupModal = () => {
           );
         })}
       </div>
-      {addedUsers.length >= 2 && (
-        <>
-          <div className="chat-name">
-            <Input
-              value={chatName}
-              setValue={setChatName}
-              placeholder="Название чата"
-            />
-          </div>
-          <SubmitButton
-            text={"Создать"}
-            action={handleCreate}
-            isLoading={loading}
-            completed={completed}
-            setCompleted={setCompleted}
-            isActive={!!chatName.length && addedUsers.length >= 2}
-          />
-        </>
-      )}
+
+      <div className="chat-name">
+        <Input
+          value={chatName}
+          setValue={setChatName}
+          placeholder="Название беседы"
+        />
+      </div>
+      <SubmitButton
+        text={"Создать"}
+        action={handleCreate}
+        isLoading={loading}
+        completed={completed}
+        setCompleted={setCompleted}
+        isActive={!!chatName.length && addedUsers.length >= 2}
+      />
     </CreateGroupModalWrapper>
   );
 };

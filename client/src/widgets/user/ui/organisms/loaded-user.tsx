@@ -17,6 +17,14 @@ const UserWrapper = styled.div<{ selected: boolean }>`
   cursor: pointer;
   background: ${({ selected }) => selected && "var(--blue)"};
   color: ${({ selected }) => selected && "#fff"};
+  position: relative;
+
+  .user-checkbox {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    z-index: 2;
+  }
 
   .user-inner {
     display: flex;
@@ -87,29 +95,41 @@ const LoadedUser = ({
     }
   };
 
+  const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    if (!setAdded) {
+      open(
+        type === "user" ? (
+          <UserModal
+            avatar={avatar}
+            name={name}
+            _id={_id}
+            status={status}
+            login={login}
+          />
+        ) : (
+          <ChatModal />
+        )
+      );
+    } else {
+      handleAdd(e);
+    }
+  };
+
   return (
     <UserWrapper
       className="user"
       selected={selected ?? false}
-      onClick={(e) => {
-        open(
-          type === "user" ? (
-            <UserModal
-              avatar={avatar}
-              name={name}
-              _id={_id}
-              status={status}
-              login={login}
-            />
-          ) : (
-            <ChatModal />
-          )
-        );
-      }}
+      onClick={handleClick}
     >
       <div className="user-inner">
         {!!setAdded && (
-          <Checkbox checked={added ?? false} setChecked={handleAdd} />
+          <div className="user-checkbox">
+            <Checkbox
+              checked={added ?? false}
+              setChecked={handleAdd}
+              invisibleOnFalse
+            />
+          </div>
         )}
         <Avatar avatar={avatar} width="30px" height="30px" marginRight="7px" />
         <div className="name-and-status">

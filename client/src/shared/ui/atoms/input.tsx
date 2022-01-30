@@ -3,7 +3,7 @@ import { FiEye, FiEyeOff, FiX } from "react-icons/fi";
 import styled from "styled-components";
 import Button from "./button";
 
-const InputWrapper = styled.div<{ leftIcon: boolean }>`
+const InputWrapper = styled.div<{ leftIcon: boolean; background?: string }>`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -28,7 +28,7 @@ const InputWrapper = styled.div<{ leftIcon: boolean }>`
     border: none;
     color: var(--text);
     outline: none;
-    background: var(--scheduleBg);
+    background: ${({ background }) => background ?? " var(--scheduleBg)"};
     height: 100%;
     width: 100%;
     padding: 10px;
@@ -42,13 +42,13 @@ const InputWrapper = styled.div<{ leftIcon: boolean }>`
       color: var(--theme-strong-transparent-opposite);
     }
 
-    &:focus-visible {
+    /* &:focus-visible {
       outline: 4px solid #ffffff1c;
     }
 
     &:focus:not(:focus-visible) {
       outline: none;
-    }
+    } */
   }
 
   button {
@@ -78,6 +78,7 @@ interface Props {
   title?: string;
   placeholder?: string;
   type?: string;
+  background?: string;
 }
 
 const Input = ({
@@ -85,12 +86,17 @@ const Input = ({
   setValue,
   leftIcon,
   title,
+  background,
   placeholder = "Введите сюда",
   type = "text",
 }: Props) => {
   const [inputType, setInputType] = useState(type);
   return (
-    <InputWrapper leftIcon={!!leftIcon} className="input-wrapper">
+    <InputWrapper
+      leftIcon={!!leftIcon}
+      className="input-wrapper"
+      background={background}
+    >
       {!!title && <h5>{title}</h5>}
       {leftIcon && <span className="icon">{leftIcon}</span>}
       <input

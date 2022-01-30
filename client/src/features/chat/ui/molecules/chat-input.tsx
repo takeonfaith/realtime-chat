@@ -5,7 +5,9 @@ import { IoMdSend } from "react-icons/io";
 import { Socket } from "socket.io-client";
 import styled from "styled-components";
 import { PinUser } from ".";
+import { AttachmentMenu } from "..";
 import { chatModel } from "../../../../entities/chat";
+import { contextMenuModel } from "../../../../entities/context-menu";
 import { userModel } from "../../../../entities/user";
 import { chatApi } from "../../../../shared/api";
 import { Message } from "../../../../shared/api/model/message";
@@ -62,7 +64,7 @@ const ChatInput = ({ chatId, setMessages, socket }: Props) => {
   const send = async () => {
     if (message.length && user && selectedChat && !showPinUser) {
       socket.emit("stop typing", chatId);
-
+      //TODO: create an array of pending messages
       try {
         setLoading(true);
         const newMessage: Message = {
@@ -71,6 +73,7 @@ const ChatInput = ({ chatId, setMessages, socket }: Props) => {
           createdAt: new Date().toString(),
           content: message,
           received: "pending",
+          forwardedMessages: [],
         };
         setMessage("");
         setMessages((prev: Message[]) => [...prev, newMessage]);
@@ -150,7 +153,9 @@ const ChatInput = ({ chatId, setMessages, socket }: Props) => {
       />
       <Button
         icon={<ImAttachment />}
-        onClick={() => null}
+        onClick={() =>
+          contextMenuModel.events.open({ content: <AttachmentMenu /> })
+        }
         background="transparent"
       />
       <Input
@@ -162,6 +167,7 @@ const ChatInput = ({ chatId, setMessages, socket }: Props) => {
         icon={loading ? <Loading width="15px" /> : <IoMdSend />}
         onClick={send}
         background="transparent"
+        isActive={!!message.length}
       />
     </ChatInputWrapper>
   );

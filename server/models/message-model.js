@@ -5,11 +5,15 @@ const messageModel = mongoose.Schema({
 		type: mongoose.Schema.Types.ObjectId,
 		ref: "User"
 	},
-	content: { type: String, required: true },
+	content: { type: String },
 	chat: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: "Chat"
-	}
+	},
+	forwardedMessages: [{
+		type: mongoose.Schema.Types.ObjectId,
+		ref: "Message"
+	}]
 }, { timestamps: true })
 
 const Message = mongoose.model("Message", messageModel)
