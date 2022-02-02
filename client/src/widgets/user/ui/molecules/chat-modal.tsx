@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { FiLogOut, FiUserPlus, FiX } from "react-icons/fi";
+import { FiChevronRight, FiLogOut, FiUserPlus, FiX } from "react-icons/fi";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import User from "../..";
@@ -7,7 +7,7 @@ import { useModal } from "../../..";
 import { chatModel } from "../../../../entities/chat";
 import { confirmModel } from "../../../../entities/confirm";
 import { userModel } from "../../../../entities/user";
-import { AddToGroupModal } from "../../../../features/chat/ui";
+import { AddToGroupModal, Attachments } from "../../../../features/chat/ui";
 import ErrorMessage from "../../../../pages/login/ui/atoms/error-message";
 import { chatApi } from "../../../../shared/api";
 import { Colors } from "../../../../shared/consts";
@@ -179,9 +179,10 @@ const ChatModal = () => {
           text="Покинуть"
         />
       </div>
-      <div className="section">
+      <div className="section" onClick={() => open(<Attachments />)}>
         <Title size={5} align="left">
           Вложения
+          <FiChevronRight />
         </Title>
         <div className="attachments">
           <SkeletonShape

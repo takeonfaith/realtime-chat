@@ -9,8 +9,8 @@ import SearchUsers from "../../../search-users";
 
 const AddToGroupModalWrapper = styled.div`
   @media (min-width: 1001px) {
-    width: 350px;
-    height: 350px;
+    width: 400px;
+    height: 400px;
   }
 
   display: flex;

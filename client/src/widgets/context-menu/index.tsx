@@ -21,7 +21,7 @@ const ContextMenuWrapper = styled.div<{
   background: var(--theme);
   border-radius: var(--brLight);
   box-shadow: 0 0 20px #0000003b;
-  transition: 0.2s height, 0.2s opacity, 0.2s visibility, 0.2s transform;
+  transition: 0.2s opacity;
   z-index: 4;
   padding: 8px;
   display: flex;
@@ -39,11 +39,11 @@ const ContextMenu = () => {
   const contextRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // window.addEventListener("click", (e) => {
-    //   if (open) {
-    //     calcPosition(e);
-    //   }
-    // });
+    window.addEventListener("click", (e) => {
+      if (!open) {
+        calcPosition(e);
+      }
+    });
     window.addEventListener("contextmenu", (e) => {
       calcPosition(e);
     });

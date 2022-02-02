@@ -5,7 +5,7 @@ const calcPosition = (e: MouseEvent) => {
   contextMenuModel.events.changePosition({
     position: {
       x: e.clientX < window.innerWidth / 2 ? e.clientX : e.clientX - 265,
-      y: e.clientY < window.innerHeight / 2 ? e.clientY : e.clientY - 120,
+      y: e.clientY < window.innerHeight / 2 ? e.clientY : e.clientY - 200,
     },
   });
 };

@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 interface Props {
-  children: JSX.Element | string | null | boolean;
+  children: React.ReactNode[] | React.ReactNode | string | null | boolean;
   size?: number;
   align?: "left" | "center" | "right";
   bottomGap?: boolean;
@@ -14,7 +14,14 @@ const TitleWrapper = styled.div<{
 }>`
   width: 100%;
   text-align: ${({ align }) => align};
+
   margin-bottom: ${({ bottomGap }) => (bottomGap ? "10px" : "0")};
+
+  & > * {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
 `;
 
 const Title = ({

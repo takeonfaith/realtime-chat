@@ -1,5 +1,5 @@
 import React from "react";
-import { FiCornerUpLeft, FiCornerUpRight, FiX } from "react-icons/fi";
+import { FiCopy, FiCornerUpLeft, FiCornerUpRight, FiX } from "react-icons/fi";
 import { HiOutlineCheckCircle } from "react-icons/hi";
 import { BiPin } from "react-icons/bi";
 import styled from "styled-components";
@@ -53,6 +53,16 @@ const MessageContextMenu = ({ message }: Props) => {
         text={"Выбрать"}
         onClick={() => {
           chatModel.events.addSelectedMessages({ message });
+          contextMenuModel.events.close();
+        }}
+        width="100%"
+        align="left"
+        background="transparent"
+      />
+      <Button
+        icon={<FiCopy />}
+        text={"Скопировать текст"}
+        onClick={() => {
           contextMenuModel.events.close();
         }}
         width="100%"

@@ -14,8 +14,8 @@ const CreateGroupModalWrapper = styled.div`
   flex-direction: column;
 
   @media (min-width: 1001px) {
-    width: 350px;
-    height: 350px;
+    width: 400px;
+    height: 400px;
   }
 
   .chat-name {
