@@ -3,6 +3,7 @@ const normalizeString = require("../config/normalize-string");
 const Chat = require("../models/chat-model");
 const { find } = require("../models/user-model");
 const User = require("../models/user-model");
+const Message = require("../models/message-model");
 
 const accessChat = expressAsyncHandler(async (req, res) => {
 	const { userId } = req.body
@@ -52,14 +53,18 @@ const accessChat = expressAsyncHandler(async (req, res) => {
 const fetchChats = expressAsyncHandler(async (req, res) => {
 	try {
 		Chat.find({ users: { $elemMatch: { $eq: req.user._id } } })
-			.populate("users", "-password")
-			.populate("groupAdmin", "-password")
+			.populate("users", "-password -friends")
+			.populate("groupAdmin", "-password -friends")
 			.populate("latestMessage")
+			.populate("pinnedMessages")
 			.sort({ updatedAt: '-1' })
 			.then(async (results) => {
 				results = await User.populate(results, {
 					path: "latestMessage.sender",
 					select: "name"
+				})
+				results = await Message.populate(results, {
+					path: "pinnedMessages.chat"
 				})
 
 				res.send(results)
@@ -119,7 +124,6 @@ const renameGroup = expressAsyncHandler(async (req, res) => {
 
 const addToGroup = expressAsyncHandler(async (req, res) => {
 	const { chatId, userId } = req.body
-	console.log('--------add to group----------', chatId, userId);
 	const added = await Chat.findByIdAndUpdate(chatId, {
 		$push: { users: userId }
 	}, { new: true })
@@ -175,6 +179,33 @@ const searchChats = expressAsyncHandler(async (req, res) => {
 	}
 })
 
+const pinMessage = expressAsyncHandler(async (req, res) => {
+	const { chatId, messageId } = req.body
+	try {
+		Chat.findByIdAndUpdate(chatId, {
+			$push: { pinnedMessages: messageId }
+		})
+			.populate("users", "-password -friends")
+			.populate("groupAdmin", "-password -friends")
+			.populate("latestMessage")
+			.populate("pinnedMessages")
+			.then(async result => {
+				let finalResult = result
+				finalResult = await User.populate(finalResult, {
+					path: 'chat.users',
+					select: 'name login'
+				})
+				finalResult = await Message.populate(finalResult, {
+					path: "chat.latestMessage"
+				})
+				res.send(finalResult)
+			})
+
+	} catch (error) {
+		console.log('Error in message pin in chat:', error.message);
+	}
+})
+
 module.exports = {
 	accessChat,
 	fetchChats,
@@ -182,5 +213,6 @@ module.exports = {
 	renameGroup,
 	addToGroup,
 	removeFromGroup,
-	searchChats
+	searchChats,
+	pinMessage
 }

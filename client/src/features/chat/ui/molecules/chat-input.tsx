@@ -13,6 +13,7 @@ import { chatApi } from "../../../../shared/api";
 import { Message } from "../../../../shared/api/model/message";
 import limitNumber from "../../../../shared/lib/limit-number";
 import { Button, Input, Loading } from "../../../../shared/ui/atoms";
+import ReplyField from "./reply-field";
 
 const ChatInputWrapper = styled.div`
   display: flex;
@@ -21,6 +22,7 @@ const ChatInputWrapper = styled.div`
   padding: 5px 10px;
   z-index: 2;
   position: relative;
+  border-top: 1px solid #00000011;
 
   input {
     background: transparent;
@@ -41,7 +43,7 @@ const ChatInput = ({ chatId, setMessages, socket }: Props) => {
     data: { user },
   } = userModel.selectors.useUser();
   const {
-    data: { selectedChat },
+    data: { selectedChat, replyMessage },
   } = chatModel.selectors.useChats();
   const [showPinUser, setShowPinUser] = useState(false);
   const chatUsers = selectedChat?.users?.filter((u) => u._id !== user?._id);
@@ -73,14 +75,22 @@ const ChatInput = ({ chatId, setMessages, socket }: Props) => {
           createdAt: new Date().toString(),
           content: message,
           received: "pending",
-          forwardedMessages: [],
+          forwardedMessages: !!replyMessage ? [replyMessage] : [],
         };
+        const tempReply = replyMessage;
         setMessage("");
         setMessages((prev: Message[]) => [...prev, newMessage]);
-        const { data } = await chatApi.sendMessage(message, chatId);
+        !!replyMessage &&
+          chatModel.events.replyToMessage({ message: replyMessage });
+        const { data } = await chatApi.sendMessage(
+          message,
+          chatId,
+          !!tempReply?._id ? [tempReply._id] : undefined
+        );
         socket.emit("new message", data);
         setMessages((messages: Message[]) => {
           messages[messages.length - 1].received = "success";
+          messages[messages.length - 1]._id = data._id;
           return [...messages];
         });
         chatModel.effects.getChatsFx(user?._id);
@@ -151,6 +161,7 @@ const ChatInput = ({ chatId, setMessages, socket }: Props) => {
         users={chatUsers ?? []}
         chosenUser={chosenPinUser}
       />
+      <ReplyField message={replyMessage} />
       <Button
         icon={<ImAttachment />}
         onClick={() =>

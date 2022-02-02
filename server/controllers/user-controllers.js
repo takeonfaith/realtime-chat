@@ -120,11 +120,8 @@ const acceptFriend = expressAsyncHandler(async (req, res) => {
 
 		const userFriends = await User.findById(user._id)
 		const friendFriends = await User.findById(req.body.friendId)
-		console.log(userFriends.friends);
 		userFriends.friends.find((friend) => friend.user.equals(req.body.friendId)).status = 'added'
 		friendFriends.friends.find((friend) => friend.user.equals(user._id)).status = 'added'
-
-		console.log(userFriends);
 
 		if (!!userFriends.friends.length && !!friendFriends.friends.length) {
 			await User.findByIdAndUpdate(user._id, { friends: userFriends.friends })

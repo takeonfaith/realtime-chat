@@ -1,11 +1,12 @@
 import React from "react";
-import { FiUser } from "react-icons/fi";
+import { FiUser, FiUsers } from "react-icons/fi";
 
 import { Container, Img } from "../atoms/avatar";
 
 export default Avatar;
 
 interface Props {
+  type?: "user" | "chat";
   avatar?: string;
   width?: string;
   height?: string;
@@ -13,7 +14,14 @@ interface Props {
   background?: string;
 }
 
-function Avatar({ avatar, width, height, marginRight, background }: Props) {
+function Avatar({
+  avatar,
+  width,
+  height,
+  marginRight,
+  background,
+  type = "user",
+}: Props) {
   return (
     <Container
       width={width}
@@ -21,7 +29,13 @@ function Avatar({ avatar, width, height, marginRight, background }: Props) {
       marginRight={marginRight}
       background={background}
     >
-      {avatar ? <Img src={avatar} /> : <FiUser />}
+      {avatar ? (
+        <Img src={avatar} />
+      ) : type === "user" ? (
+        <FiUser />
+      ) : (
+        <FiUsers />
+      )}
     </Container>
   );
 }

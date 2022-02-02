@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useModal } from "../../..";
 import { Avatar } from "../../../../shared/ui/molecules";
 import { ChatModal, UserModal } from "../molecules";
-import { User as IUser } from "../../../../shared/api/model/user";
+import { IUser } from "../../../../shared/api/model/user";
 import { Checkbox } from "../../../../shared/ui/atoms";
 
 const UserWrapper = styled.div<{ selected: boolean }>`
@@ -131,7 +131,13 @@ const LoadedUser = ({
             />
           </div>
         )}
-        <Avatar avatar={avatar} width="30px" height="30px" marginRight="7px" />
+        <Avatar
+          type={type}
+          avatar={avatar}
+          width="30px"
+          height="30px"
+          marginRight="7px"
+        />
         <div className="name-and-status">
           <span className="name">{name}</span>
           <span className="status">{status}</span>

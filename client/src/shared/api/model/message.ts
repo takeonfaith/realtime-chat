@@ -1,10 +1,10 @@
-import { Chat, User } from ".";
+import { Chat, IUser } from ".";
 
 export interface Message {
   _id?: string;
   content?: string;
   createdAt: string;
-  sender: User;
+  sender: IUser;
   chat: Chat;
   received: "pending" | "success" | "failure";
   forwardedMessages: Message[];

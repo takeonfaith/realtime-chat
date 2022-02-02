@@ -25,17 +25,20 @@ const getChatsFx = createEffect(async (userId: string): Promise<Chat[]> => {
 const changeSelectedChat = createEvent<{ chat: Chat }>();
 const addSelectedMessages = createEvent<{ message: Message }>();
 const clearAllselectedMessage = createEvent();
+const replyToMessage = createEvent<{ message: Message }>();
 
 interface ChatStore {
   chats: Chat[];
   selectedChat: Chat | null;
   selectedMessages: Message[];
+  replyMessage: Message | null;
 }
 
 const initialStore: ChatStore = {
   chats: [],
   selectedChat: null,
   selectedMessages: [],
+  replyMessage: null,
 };
 
 const $chatStore = createStore(initialStore)
@@ -60,6 +63,13 @@ const $chatStore = createStore(initialStore)
   .on(clearAllselectedMessage, (oldData, newData) => ({
     ...oldData,
     selectedMessages: [],
+  }))
+  .on(replyToMessage, (oldData, newData) => ({
+    ...oldData,
+    replyMessage:
+      newData.message._id === oldData.replyMessage?._id
+        ? null
+        : newData.message,
   }));
 
 export const selectors = {
@@ -74,4 +84,5 @@ export const events = {
   changeSelectedChat,
   clearAllselectedMessage,
   addSelectedMessages,
+  replyToMessage,
 };

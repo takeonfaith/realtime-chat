@@ -5,7 +5,7 @@ import { SkeletonLoading } from ".";
 import { CHAT_ROUTE } from "../../../../app/routes/routes";
 import { chatModel } from "../../../../entities/chat";
 import { userModel } from "../../../../entities/user";
-import { Chat } from "../../../../shared/api/model";
+import { Chat, Message } from "../../../../shared/api/model";
 import { Colors } from "../../../../shared/consts";
 import localizeDate from "../../../../shared/lib/localize-date";
 import { Checkbox } from "../../../../shared/ui/atoms";
@@ -102,7 +102,7 @@ const ChatItemWrapper = styled(Link)<{ isChosen: boolean }>`
   }
 `;
 
-type Props = Chat & {
+type Props = { chat?: Chat; latestMessage: Message } & {
   loading: boolean;
   amountOfUnreadMessages: number;
   avatar?: string;
@@ -112,13 +112,9 @@ type Props = Chat & {
 };
 
 const ChatItem = ({
-  _id,
+  chat,
   latestMessage,
-  users,
-  chatName,
-  groupAdmin,
   loading,
-  isGroupChat,
   amountOfUnreadMessages,
   avatar,
   addMode,
@@ -132,7 +128,8 @@ const ChatItem = ({
     chatId: string | undefined;
   };
 
-  if (!user) return null;
+  if (!user || !chat) return null;
+  const { _id, chatName, isGroupChat, users } = chat;
 
   const handleCheck = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.preventDefault();
@@ -140,10 +137,7 @@ const ChatItem = ({
       if (!!chosenChats.find((chat) => chat._id === _id)) {
         setChosenChats((prev) => prev.filter((chat) => chat._id !== _id));
       } else {
-        setChosenChats((prev) => [
-          ...prev,
-          { _id, chatName, isGroupChat, groupAdmin, latestMessage, users },
-        ]);
+        setChosenChats((prev) => [...prev, chat]);
       }
     }
   };
@@ -151,14 +145,7 @@ const ChatItem = ({
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     if (!chosenChats) {
       chatModel.events.changeSelectedChat({
-        chat: {
-          _id,
-          chatName,
-          groupAdmin,
-          isGroupChat,
-          latestMessage,
-          users,
-        },
+        chat,
       });
     } else {
       e.preventDefault();
@@ -192,6 +179,7 @@ const ChatItem = ({
           width="45px"
           height="45px"
           marginRight="7px"
+          type={chat.isGroupChat ? "chat" : "user"}
           background={
             params?.chatId === _id && !chosenChats ? "#ffffffab" : undefined
           }
@@ -202,7 +190,7 @@ const ChatItem = ({
             <div className="last-message">
               {latestMessage.content}
               <span className="forwarded-message">
-                {!!latestMessage.forwardedMessages.length &&
+                {!!latestMessage?.forwardedMessages?.length &&
                   " Пересланное сообщение"}
               </span>
             </div>

@@ -63,7 +63,7 @@ interface Props {
 
 const UserModal = ({ avatar, name, _id, status, login }: Props) => {
   const {
-    data: { user, friendRequests },
+    data: { user },
   } = userModel.selectors.useUser();
   const { close } = useModal();
   const [loading, setLoading] = useState(false);
@@ -103,7 +103,7 @@ const UserModal = ({ avatar, name, _id, status, login }: Props) => {
   return (
     <UserModalWrapper>
       <ErrorMessage message={error} />
-      <Avatar width="120px" height="120px" marginRight="0" />
+      <Avatar type="user" width="120px" height="120px" marginRight="0" />
       <div className="name-and-login">
         <b>{name}</b>
         <span>@{login}</span>

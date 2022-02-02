@@ -1,4 +1,5 @@
 import React from "react";
+import { FiCornerUpRight } from "react-icons/fi";
 import styled from "styled-components";
 import { ForwardedMessage, MessageContextMenu } from ".";
 import { chatModel } from "../../../../entities/chat";
@@ -6,6 +7,7 @@ import { contextMenuModel } from "../../../../entities/context-menu";
 import { userModel } from "../../../../entities/user";
 import { Message } from "../../../../shared/api/model/message";
 import localizeDate from "../../../../shared/lib/localize-date";
+import { Button } from "../../../../shared/ui/atoms";
 import getMessageReceivedIcon from "../../lib/get-message-received-icon";
 import prepareContent from "../../lib/prepare-content";
 
@@ -18,6 +20,20 @@ const MessageItemWrapper = styled.div<{
   align-items: flex-end;
   padding: ${({ isLast }) => (!isLast ? "2px 0" : "2px 0 10px 0")};
   position: relative;
+
+  .reply-button {
+    opacity: 0;
+    visibility: hidden;
+    border-radius: 100%;
+    margin-left: 10px;
+    transform: scale(0.6);
+  }
+
+  &:hover .reply-button {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(0.9);
+  }
 
   .message-avatar {
     width: 32px;
@@ -50,21 +66,6 @@ const MessageItemWrapper = styled.div<{
     margin-left: 10px;
     max-width: 40%;
     position: relative;
-
-    @keyframes send {
-      0% {
-        transform: translateY(50px) scale(1.05);
-        background: transparent;
-        opacity: 0;
-        z-index: 100;
-      }
-      100% {
-        transform: translate(0%) scale(1);
-        background: ${({ isYourMessage }) =>
-          isYourMessage ? "var(--reallyBlue)" : "var(--theme)"};
-        opacity: 1;
-      }
-    }
 
     .name-and-time {
       b {
@@ -140,6 +141,11 @@ const MessageItem = ({ message, isLast }: Props) => {
           {prepareContent(message.content ?? "", message, selectedChat, user)}
         </span>
       </div>
+      <Button
+        icon={<FiCornerUpRight />}
+        onClick={() => chatModel.events.replyToMessage({ message })}
+        className="reply-button"
+      />
     </MessageItemWrapper>
   );
 };

@@ -126,8 +126,18 @@ export const searchChats = (value: string, userId: string) => {
     headers: {
       authorization: `Bearer ${token}`,
     },
-    user: { _id: userId },
   };
 
   return $api.get<Chat[]>(`/api/chat/${normalizeString(value)}`, config);
+};
+
+export const pinMessage = (chatId: string, messageId: string) => {
+  const { token } = JSON.parse(localStorage.getItem("token") ?? "null");
+  const config = {
+    headers: {
+      authorization: `Bearer ${token}`,
+    },
+  };
+
+  return $api.post<Chat>(`/api/chat/pinMessage`, { chatId, messageId }, config);
 };

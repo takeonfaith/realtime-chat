@@ -1,5 +1,5 @@
 import React from "react";
-import { User as IUser } from "../../shared/api/model/user";
+import { IUser } from "../../shared/api/model/user";
 import { SkeletonLoading } from "./ui";
 import { LoadedUser } from "./ui/organisms";
 

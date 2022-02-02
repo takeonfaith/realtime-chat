@@ -1,30 +1,34 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import { FiCornerUpLeft, FiMoreVertical, FiSearch, FiX } from "react-icons/fi";
 import { ImAttachment } from "react-icons/im";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import { Attachments } from ".";
+import { Attachments, HeaderPinnedMessage, SearchChatMessages } from ".";
 import { chatModel } from "../../../../entities/chat";
 import { contextMenuModel } from "../../../../entities/context-menu";
 import { userModel } from "../../../../entities/user";
 import { Colors } from "../../../../shared/consts";
 import { Button } from "../../../../shared/ui/atoms";
-import LocalSearch from "../../../../shared/ui/molecules/local-search";
 import useModal from "../../../../widgets/modal";
 import User from "../../../../widgets/user";
 import getOtherUser from "../../lib/get-other-user";
-import searchChatMessages from "../../lib/search-chat-messages";
 import ShareMessage from "./share-message";
 
 const ChatHeaderWrapper = styled.div`
-  height: 50px;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 6px;
+  flex-direction: column;
   background: var(--list-of-chats);
   position: relative;
   z-index: 2;
+
+  .header-content {
+    height: 50px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 6px;
+  }
 
   .buttons {
     display: flex;
@@ -38,7 +42,6 @@ const ChatHeaderWrapper = styled.div`
 
 const ChatHeader = () => {
   const menuRef = useRef<HTMLDivElement>(null);
-  const [searchMode, setSearchMode] = useState(false);
   const { open } = useModal();
   const {
     data: { selectedChat, selectedMessages },
@@ -49,96 +52,103 @@ const ChatHeader = () => {
   const history = useHistory();
 
   const handleClick = () => {
-    if (searchMode) setSearchMode((prev) => !prev);
-    else history.push("/chat");
+    history.push("/chat");
   };
 
   if (!user?._id) return null;
 
-  return !selectedMessages.length ? (
+  return (
     <ChatHeaderWrapper ref={menuRef}>
-      <Button icon={<FiX />} onClick={handleClick} background="transparent" />
-      {!searchMode ? (
-        <User
-          avatar={""}
-          name={
-            selectedChat?.isGroupChat
-              ? selectedChat?.chatName
-              : getOtherUser(user._id ?? "0", selectedChat?.users ?? []).name
-          }
-          status={"online"}
-          login={getOtherUser(user._id ?? "0", selectedChat?.users ?? []).login}
-          _id={
-            selectedChat?.isGroupChat
-              ? selectedChat._id
-              : getOtherUser(user._id ?? "0", selectedChat?.users ?? [])._id
-          }
-          type={selectedChat?.isGroupChat ? "chat" : "user"}
-        />
-      ) : (
-        <LocalSearch
-          searchEngine={(
-            _: string,
-            value: string,
-            setResult: (params: any) => void
-          ) => searchChatMessages(selectedChat?._id ?? "", value, setResult)}
-          setResult={(messages: any) => console.log(messages)}
-          placeholder="Поиск сообщений"
-        />
-      )}
-      <Button
-        icon={<FiMoreVertical />}
-        background="transparent"
-        onClick={() =>
-          contextMenuModel.events.open({
-            content: (
-              <>
-                <Button
-                  icon={<FiSearch />}
-                  text={"Поиск по сообщениям"}
-                  onClick={() => {
-                    setSearchMode((prev) => !prev);
-                  }}
-                  width="100%"
-                  align="left"
-                  background="transparent"
-                />
-                <Button
-                  icon={<ImAttachment />}
-                  text={"Вложения"}
-                  onClick={() => open(<Attachments />)}
-                  width="100%"
-                  align="left"
-                  background="transparent"
-                />
-              </>
-            ),
-          })
-        }
-      />
-    </ChatHeaderWrapper>
-  ) : (
-    <ChatHeaderWrapper>
-      <div className="buttons">
-        <Button
-          onClick={() => open(<ShareMessage messages={selectedMessages} />)}
-          icon={<FiCornerUpLeft />}
-          text="Переслать"
-          background={Colors.blue.transparent}
-          textColor={Colors.blue.main}
-        />
-        <Button
-          onClick={() => open(<ShareMessage messages={selectedMessages} />)}
-          icon={<FiX />}
-          text="Удалить"
-          background={Colors.red.transparent}
-          textColor={Colors.red.main}
-        />
+      <div className="header-content">
+        {!selectedMessages.length ? (
+          <>
+            <Button
+              icon={<FiX />}
+              onClick={handleClick}
+              background="transparent"
+            />
+            <User
+              avatar={""}
+              name={
+                selectedChat?.isGroupChat
+                  ? selectedChat?.chatName
+                  : getOtherUser(user._id ?? "0", selectedChat?.users ?? [])
+                      .name
+              }
+              status={"online"}
+              login={
+                getOtherUser(user._id ?? "0", selectedChat?.users ?? []).login
+              }
+              _id={
+                selectedChat?.isGroupChat
+                  ? selectedChat._id
+                  : getOtherUser(user._id ?? "0", selectedChat?.users ?? [])._id
+              }
+              type={selectedChat?.isGroupChat ? "chat" : "user"}
+            />
+            <Button
+              icon={<FiMoreVertical />}
+              background="transparent"
+              onClick={() =>
+                contextMenuModel.events.open({
+                  content: (
+                    <>
+                      <Button
+                        icon={<FiSearch />}
+                        text={"Поиск по сообщениям"}
+                        onClick={() => {
+                          open(<SearchChatMessages />);
+                        }}
+                        width="100%"
+                        align="left"
+                        background="transparent"
+                      />
+                      <Button
+                        icon={<ImAttachment />}
+                        text={"Вложения"}
+                        onClick={() => open(<Attachments />)}
+                        width="100%"
+                        align="left"
+                        background="transparent"
+                      />
+                    </>
+                  ),
+                })
+              }
+            />
+          </>
+        ) : (
+          <>
+            <div className="buttons">
+              <Button
+                onClick={() =>
+                  open(<ShareMessage messages={selectedMessages} />)
+                }
+                icon={<FiCornerUpLeft />}
+                text="Переслать"
+                background={Colors.blue.transparent}
+                textColor={Colors.blue.main}
+              />
+              <Button
+                onClick={() =>
+                  open(<ShareMessage messages={selectedMessages} />)
+                }
+                icon={<FiX />}
+                text="Удалить"
+                background={Colors.red.transparent}
+                textColor={Colors.red.main}
+              />
+            </div>
+            <Button
+              onClick={() => chatModel.events.clearAllselectedMessage()}
+              icon={<FiX />}
+              text="Отменить"
+            />
+          </>
+        )}
       </div>
-      <Button
-        onClick={() => chatModel.events.clearAllselectedMessage()}
-        icon={<FiX />}
-        text="Отменить"
+      <HeaderPinnedMessage
+        showPinnedMessage={!!selectedChat?.pinnedMessages?.length}
       />
     </ChatHeaderWrapper>
   );

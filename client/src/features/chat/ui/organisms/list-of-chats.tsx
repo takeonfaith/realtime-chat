@@ -6,7 +6,7 @@ import { CHAT_ROUTE } from "../../../../app/routes/routes";
 import { chatModel } from "../../../../entities/chat";
 import { notificationModel } from "../../../../entities/notifications";
 import { userModel } from "../../../../entities/user";
-import { Chat, User as IUser } from "../../../../shared/api/model";
+import { Chat, IUser } from "../../../../shared/api/model";
 import { Message } from "../../../../shared/api/model/message";
 import { Button, Divider, Title } from "../../../../shared/ui/atoms";
 import LocalSearch from "../../../../shared/ui/molecules/local-search";
@@ -24,6 +24,7 @@ const ListOfChatsWrapper = styled.div<{ chatId?: string }>`
   background: var(--list-of-chats);
   color: var(--text);
   margin-left: 70px;
+  border-right: 1px solid #00000011;
 
   .search-and-button {
     display: flex;

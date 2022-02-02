@@ -1,7 +1,7 @@
 import { AxiosResponse } from "axios";
 import normalizeString from "../lib/normalize-string";
 import { $api } from "./config";
-import { User, UserToken } from "./model";
+import { IUser, UserToken } from "./model";
 
 export type LoginData = { login: string; password: string };
 export type SignUpData = {
@@ -17,20 +17,20 @@ export const getUserToken = ({ login, password }: LoginData) => {
   });
 };
 
-export const getUser = (token: string): Promise<AxiosResponse<User, any>> => {
+export const getUser = (token: string): Promise<AxiosResponse<IUser, any>> => {
   const config = {
     headers: {
       authorization: `Bearer ${token}`,
     },
   };
-  return $api.get<User>("/api/user/getUser", config);
+  return $api.get<IUser>("/api/user/getUser", config);
 };
 
 export const login = ({
   login,
   password,
-}: LoginData): Promise<AxiosResponse<User, any>> => {
-  return $api.post<User>("/api/user/login", {
+}: LoginData): Promise<AxiosResponse<IUser, any>> => {
+  return $api.post<IUser>("/api/user/login", {
     login,
     password,
   });
@@ -38,10 +38,10 @@ export const login = ({
 
 export const signUp = (
   props: SignUpData
-): Promise<AxiosResponse<User, any>> => {
+): Promise<AxiosResponse<IUser, any>> => {
   const { name, login, password } = props;
 
-  return $api.post<User>("/api/user/", {
+  return $api.post<IUser>("/api/user/", {
     name,
     login,
     password,
@@ -57,7 +57,10 @@ export const searchUsers = (value: string, userId: string) => {
     user: { _id: userId },
   };
 
-  return $api.get<User[]>(`/api/user?search=${normalizeString(value)}`, config);
+  return $api.get<IUser[]>(
+    `/api/user?search=${normalizeString(value)}`,
+    config
+  );
 };
 
 export const addFriend = (friendId: string) => {
@@ -67,7 +70,7 @@ export const addFriend = (friendId: string) => {
       authorization: `Bearer ${token}`,
     },
   };
-  return $api.post<User[]>(`/api/user/addFriend`, { friendId }, config);
+  return $api.post<IUser[]>(`/api/user/addFriend`, { friendId }, config);
 };
 
 export const acceptFriend = (friendId: string) => {
@@ -77,7 +80,7 @@ export const acceptFriend = (friendId: string) => {
       authorization: `Bearer ${token}`,
     },
   };
-  return $api.post<User[]>(`/api/user/acceptFriend`, { friendId }, config);
+  return $api.post<IUser[]>(`/api/user/acceptFriend`, { friendId }, config);
 };
 
 export const rejectFriend = (friendId: string) => {
@@ -87,5 +90,5 @@ export const rejectFriend = (friendId: string) => {
       authorization: `Bearer ${token}`,
     },
   };
-  return $api.post<User[]>(`/api/user/rejectFriend`, { friendId }, config);
+  return $api.post<IUser[]>(`/api/user/rejectFriend`, { friendId }, config);
 };

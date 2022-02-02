@@ -6,3 +6,5 @@ export { default as Attachments } from "./attachments";
 export { default as CreateGroupModal } from "./create-group-modal";
 export { default as AddToGroupModal } from "./add-to-group-modal";
 export { default as PinUser } from "./pin-user";
+export { default as HeaderPinnedMessage } from "./header-pinned-message";
+export { default as SearchChatMessages } from "./search-chat-messages";

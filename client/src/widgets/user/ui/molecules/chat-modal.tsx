@@ -5,12 +5,19 @@ import styled from "styled-components";
 import User from "../..";
 import { useModal } from "../../..";
 import { chatModel } from "../../../../entities/chat";
+import { confirmModel } from "../../../../entities/confirm";
 import { userModel } from "../../../../entities/user";
 import { AddToGroupModal } from "../../../../features/chat/ui";
 import ErrorMessage from "../../../../pages/login/ui/atoms/error-message";
 import { chatApi } from "../../../../shared/api";
 import { Colors } from "../../../../shared/consts";
-import { Button, Loading, Title } from "../../../../shared/ui/atoms";
+import {
+  Button,
+  Divider,
+  Loading,
+  SkeletonShape,
+  Title,
+} from "../../../../shared/ui/atoms";
 import { Avatar, RenameField } from "../../../../shared/ui/molecules";
 
 const ChatModalWrapper = styled.div`
@@ -19,7 +26,9 @@ const ChatModalWrapper = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
+  overflow-y: auto;
+  overflow-x: hidden;
 
   .chat-name {
     margin: 10px 0;
@@ -27,9 +36,7 @@ const ChatModalWrapper = styled.div`
 
   .users-list {
     width: 100%;
-    height: 100%;
     margin-bottom: 10px;
-    overflow-y: auto;
     min-height: fit-content;
   }
 
@@ -45,6 +52,23 @@ const ChatModalWrapper = styled.div`
 
     & > * + * {
       margin-left: 5px;
+    }
+  }
+
+  .section {
+    width: 100%;
+    margin: 5px 0;
+
+    h5 {
+      margin-bottom: 5px;
+    }
+  }
+
+  .attachments {
+    display: flex;
+
+    & > * + * {
+      margin-left: 6px;
     }
   }
 `;
@@ -108,7 +132,7 @@ const ChatModal = () => {
 
   return (
     <ChatModalWrapper>
-      <Avatar width="120px" height="120px" marginRight="0" />
+      <Avatar type="chat" width="120px" height="120px" marginRight="0" />
       <ErrorMessage message={renameError} />
       <div className="chat-name">
         <RenameField
@@ -155,37 +179,85 @@ const ChatModal = () => {
           text="Покинуть"
         />
       </div>
-      <Title size={5} align="left" bottomGap>
-        Администратор
-      </Title>
-      <User {...selectedChat.groupAdmin} status="online" />
-      <Title size={5} align="left" bottomGap>
-        Участники
-      </Title>
-      <div className="users-list">
-        {selectedChat?.users.map((u) => {
-          return (
-            <User
-              {...u}
-              status="online"
-              key={u._id}
-              actionOnUser={
-                isGroupAdmin &&
-                user &&
-                u._id !== user._id && (
-                  <Button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      !loading && removeHandle(u._id);
-                    }}
-                    icon={!loading ? <FiX /> : <Loading width="10px" />}
-                    background="transparent"
-                  />
-                )
-              }
-            />
-          );
-        })}
+      <div className="section">
+        <Title size={5} align="left">
+          Вложения
+        </Title>
+        <div className="attachments">
+          <SkeletonShape
+            shape={"rect"}
+            size={{
+              width: "80px",
+              height: "80px",
+            }}
+            margin="0"
+          />
+          <SkeletonShape
+            shape={"rect"}
+            size={{
+              width: "80px",
+              height: "80px",
+            }}
+            margin="0"
+          />
+          <SkeletonShape
+            shape={"rect"}
+            size={{
+              width: "80px",
+              height: "80px",
+            }}
+            margin="0"
+          />
+          <SkeletonShape
+            shape={"rect"}
+            size={{
+              width: "80px",
+              height: "80px",
+            }}
+            margin="0"
+          />
+        </div>
+      </div>
+      <Divider />
+      <div className="section">
+        <Title size={5} align="left">
+          Администратор
+        </Title>
+        <User {...selectedChat.groupAdmin} status="online" />
+      </div>
+      <div className="section">
+        <Title size={5} align="left">
+          Участники
+        </Title>
+        <div className="users-list">
+          {selectedChat?.users.map((u) => {
+            return (
+              <User
+                {...u}
+                status="online"
+                key={u._id}
+                actionOnUser={
+                  isGroupAdmin &&
+                  user &&
+                  u._id !== user._id && (
+                    <Button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        !loading &&
+                          confirmModel.events.evokeConfirm({
+                            message: `Вы уверены, что хотите удалить ${u.name} из беседы?`,
+                            onConfirm: () => removeHandle(u._id),
+                          });
+                      }}
+                      icon={!loading ? <FiX /> : <Loading width="10px" />}
+                      background="transparent"
+                    />
+                  )
+                }
+              />
+            );
+          })}
+        </div>
       </div>
     </ChatModalWrapper>
   );

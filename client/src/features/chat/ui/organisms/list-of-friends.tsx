@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { FiUserCheck, FiUsers } from "react-icons/fi";
 import styled from "styled-components";
 import { userModel } from "../../../../entities/user";
-import { Chat, User as IUser } from "../../../../shared/api/model";
+import { Chat, IUser } from "../../../../shared/api/model";
 import { Avatar } from "../../../../shared/ui/molecules";
 
 const ListOfFriendsWrapper = styled.div`
@@ -57,7 +57,7 @@ const ListOfFriendsWrapper = styled.div`
 
 const ListOfFriends = () => {
   const {
-    data: { user },
+    data: { addedFriends },
   } = userModel.selectors.useUser();
   const [chats, setChats] = useState<Chat[]>([]);
   const [open, setOpen] = useState(false);
@@ -67,18 +67,16 @@ const ListOfFriends = () => {
       <div className="friends-list">
         <FiUsers className="icon" />
         {/* {!friends.length && <b>Вы не добавили друзей</b>} */}
-        {user?.friends
-          ?.filter((friend) => friend.status === "added")
-          ?.map((friend) => {
-            return (
-              <Avatar
-                width="40px"
-                height="40px"
-                marginRight="0"
-                key={friend.user._id}
-              />
-            );
-          })}
+        {addedFriends?.map((friend) => {
+          return (
+            <Avatar
+              width="40px"
+              height="40px"
+              marginRight="0"
+              key={friend._id}
+            />
+          );
+        })}
       </div>
     </ListOfFriendsWrapper>
   );

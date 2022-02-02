@@ -1,10 +1,10 @@
 import React from "react";
 import styled from "styled-components";
 import { notificationModel } from "../../../../entities/notifications";
-import { Chat, User as IUser } from "../../../../shared/api/model";
+import { Chat, IUser } from "../../../../shared/api/model";
 import { Message } from "../../../../shared/api/model/message";
 import useResize from "../../../../shared/lib/hooks/use-resize";
-import { Divider, Title } from "../../../../shared/ui/atoms";
+import { Divider, NoResult, Title } from "../../../../shared/ui/atoms";
 import { User } from "../../../../widgets";
 import { ChatItem, SkeletonLoading } from "../atoms";
 
@@ -35,21 +35,14 @@ const ChatItems = ({
 
   return (
     <ChatItemsWrapper height={height}>
-      {!chats.chats.length &&
-        !chats.messages.length &&
-        !chats.users.length &&
-        !loading && (
-          <>
-            <Title size={3}>Нет результатов</Title>
-            <img
-              src={
-                "https://ouch-cdn2.icons8.com/6xR7hLv0Cu7cNZTYf-TWggmFVxX_Cr_54b2S_KF_SvE/rs:fit:912:912/czM6Ly9pY29uczgu/b3VjaC1wcm9kLmFz/c2V0cy9zdmcvOTU1/LzQ1MThiYWQ2LTM5/ZGUtNDdjMC04YmZi/LWIyYmIzODkzMzkz/Zi5zdmc.png"
-              }
-              alt="e"
-              style={{ width: "120px" }}
-            />
-          </>
-        )}
+      <NoResult
+        show={
+          !chats.chats.length &&
+          !chats.messages.length &&
+          !chats.users.length &&
+          !loading
+        }
+      />
       {loading && chats.chats.length === 0 && (
         <>
           <SkeletonLoading />
@@ -60,7 +53,8 @@ const ChatItems = ({
       )}
       {chats.chats.map((chat) => (
         <ChatItem
-          {...chat}
+          latestMessage={chat.latestMessage}
+          chat={chat}
           key={chat._id}
           loading={false}
           amountOfUnreadMessages={
@@ -94,12 +88,8 @@ const ChatItems = ({
           </Title>
           {chats.messages.map((message) => (
             <ChatItem
-              _id={message.chat._id}
-              chatName={message.chat.chatName}
-              groupAdmin={message.chat.groupAdmin}
-              isGroupChat={message.chat.isGroupChat}
               latestMessage={message}
-              users={message.chat.users}
+              chat={message.chat}
               key={message.createdAt}
               loading={false}
               amountOfUnreadMessages={0}

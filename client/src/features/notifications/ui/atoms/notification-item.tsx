@@ -23,8 +23,8 @@ const NotificationItem = (props: Notification) => {
 
   return (
     <ChatItem
-      {...chat}
-      chatName={chat.chatName}
+      latestMessage={chat.latestMessage}
+      chat={chat}
       loading={false}
       amountOfUnreadMessages={0}
       addMode={false}

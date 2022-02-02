@@ -1,6 +1,5 @@
 import React from "react";
-import { FiImage } from "react-icons/fi";
-import { HiOutlineChartSquareBar } from "react-icons/hi";
+import { HiOutlineChartSquareBar, HiOutlinePhotograph } from "react-icons/hi";
 import styled from "styled-components";
 import { userModel } from "../../../../entities/user";
 import { Button } from "../../../../shared/ui/atoms";
@@ -24,7 +23,7 @@ const AttachmentMenu = () => {
         background="transparent"
       />
       <Button
-        icon={<FiImage />}
+        icon={<HiOutlinePhotograph />}
         onClick={() => null}
         text="Изображение"
         background="transparent"

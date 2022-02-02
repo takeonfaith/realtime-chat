@@ -10,3 +10,4 @@ export { default as Divider } from "./divider";
 export { default as SubmitButton } from "./submit-button";
 export { default as Status } from "./status";
 export { default as Checkbox } from "./checkbox";
+export { default as NoResult } from "./no-result";

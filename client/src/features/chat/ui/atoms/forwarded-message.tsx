@@ -2,8 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import { Message } from "../../../../shared/api/model/message";
 import localizeDate from "../../../../shared/lib/localize-date";
-import { Avatar } from "../../../../shared/ui/molecules";
-import prepareContent from "../../lib/prepare-content";
 
 const ForwardedMessageWrapper = styled.div`
   height: fit-content;
@@ -14,27 +12,37 @@ const ForwardedMessageWrapper = styled.div`
   padding: 7px 5px;
   padding-left: 10px;
 
-  .name-and-message {
+  .f-name-and-message {
     display: flex;
-    min-width: 200px;
+    flex-direction: column;
     background: transparent;
-    margin-left: 0;
-    padding: 0;
+    position: relative;
 
-    .name-and-time {
+    .f-name-and-time {
       display: flex;
-      width: 100%;
-
+      align-items: flex-start;
+      height: fit-content;
       b {
-        margin-bottom: 0;
+        font-size: 0.8em;
+        margin-right: 10px;
+      }
+
+      span {
+        font-size: 0.7em;
+        opacity: 0.8;
       }
     }
+
+    .f-message {
+      font-size: 1em;
+    }
+
     &::before {
       content: "";
       width: 3px;
       height: calc(100% + 14px);
       position: absolute;
-      left: -50px;
+      left: -10px;
       top: -7px;
       background: var(--purple);
       display: block;
@@ -44,21 +52,25 @@ const ForwardedMessageWrapper = styled.div`
 
 interface Props {
   message: Message;
+  showForwardedMessages?: boolean;
 }
 
-const ForwardedMessage = ({ message }: Props) => {
+const ForwardedMessage = ({ message, showForwardedMessages = true }: Props) => {
   return (
     <ForwardedMessageWrapper>
-      <Avatar width="35px" height="35px" marginRight="5px" />
-      <div className="name-and-message">
-        <div className="name-and-time">
+      <div className="f-name-and-message">
+        <div className="f-name-and-time">
           <b>{message.sender.name}</b>
           <span>{localizeDate(message.createdAt, "hours")} </span>
         </div>
-        {message.forwardedMessages.map((message) => {
-          return <ForwardedMessage message={message} key={message._id} />;
-        })}
-        <span className="message">{message.content}</span>
+        {showForwardedMessages &&
+          message.forwardedMessages.map((message) => {
+            return <ForwardedMessage message={message} key={message._id} />;
+          })}
+        <span className="f-message">
+          {message.content}{" "}
+          {!!message.forwardedMessages.length && "Пересланные сообщения"}
+        </span>
       </div>
     </ForwardedMessageWrapper>
   );

@@ -2,13 +2,14 @@ import axios from "axios";
 import { createEffect, createEvent, createStore, forward } from "effector";
 import { useStore } from "effector-react";
 import { userApi } from "../../../shared/api";
-import { User, UserToken } from "../../../shared/api/model";
+import { IUser, UserToken } from "../../../shared/api/model";
 import { LoginData, SignUpData } from "../../../shared/api/user-api";
 
 interface UserStore {
-  currentUser: User | null;
+  currentUser: IUser | null;
   isAuthenticated: boolean | null;
   error: string | null;
+  addedFriends: IUser[] | null;
   friendRequests: {
     user: { _id: string; name: string; login: string };
     status: string;
@@ -48,6 +49,11 @@ const getUserFx = createEffect<UserToken, UserStore>(
         currentUser: data,
         isAuthenticated: !!data,
         error: "",
+        addedFriends:
+          data?.friends?.reduce((acc, friend) => {
+            if (friend.status === "added") acc.push(friend.user);
+            return acc;
+          }, [] as IUser[]) ?? [],
         friendRequests:
           data?.friends?.filter((friend) => friend.status === "pending") ?? [],
       };
@@ -73,6 +79,7 @@ const signUpFx = createEffect<SignUpData, UserStore>(
         currentUser: data,
         isAuthenticated: true,
         error: null,
+        addedFriends: [],
         friendRequests: [],
       };
     } catch (error) {
@@ -91,6 +98,11 @@ const loginFx = createEffect<LoginData, UserStore>(
         currentUser: data,
         isAuthenticated: true,
         error: null,
+        addedFriends:
+          data?.friends?.reduce((acc, friend) => {
+            if (friend.status === "added") acc.push(friend.user);
+            return acc;
+          }, [] as IUser[]) ?? [],
         friendRequests:
           data?.friends?.filter((friend) => friend.status === "pending") ?? [],
       };
@@ -106,9 +118,15 @@ const useUser = () => {
     error,
     isAuthenticated,
     friendRequests,
+    addedFriends,
   } = useStore($userStore);
   return {
-    data: { user, isAuthenticated: isAuthenticated, friendRequests },
+    data: {
+      user,
+      isAuthenticated: isAuthenticated,
+      friendRequests,
+      addedFriends,
+    },
     loading: {
       login: useStore(loginFx.pending),
       signup: useStore(signUpFx.pending),
@@ -124,7 +142,7 @@ const logoutFx = createEffect(() => {
 const login = createEvent<LoginData>();
 const signUp = createEvent<SignUpData>();
 const logout = createEvent();
-const addFriend = createEvent<{ friend: User }>();
+const addFriend = createEvent<{ friend: IUser }>();
 
 forward({ from: login, to: loginFx });
 forward({ from: logout, to: logoutFx });
@@ -141,6 +159,7 @@ const initialStore: UserStore = {
   error: null,
   isAuthenticated: !!tokenInStorage,
   friendRequests: [],
+  addedFriends: null,
 };
 
 const $userStore = createStore<UserStore>(initialStore)
@@ -156,18 +175,21 @@ const $userStore = createStore<UserStore>(initialStore)
     currentUser: null,
     isAuthenticated: null,
     friendRequests: [],
+    addedFriends: [],
   }))
   .on(getUserTokenFx.failData, (_, error) => ({
     isAuthenticated: null,
     currentUser: null,
     error: error.message,
     friendRequests: [],
+    addedFriends: [],
   }))
   .on(logout, () => ({
     error: "",
     isAuthenticated: null,
     currentUser: null,
     friendRequests: [],
+    addedFriends: [],
   }))
   .on(addFriend, (oldData, newData) => ({
     ...oldData,

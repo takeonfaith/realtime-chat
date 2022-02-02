@@ -22,7 +22,8 @@ const VotingItemWrapper = styled.div`
   overflow: hidden;
   /* transition: 0.2s; */
 
-  .vote-item-name {
+  .vote-item-name,
+  .votes {
     z-index: 2;
   }
 
@@ -98,7 +99,7 @@ const VotingItem = ({
             : 0
         }
       ></FillSpace>
-      {isVoted && <div className="voutes">{option.vouters.length}</div>}
+      {isVoted && <div className="votes">{option.vouters.length}</div>}
     </VotingItemWrapper>
   );
 };

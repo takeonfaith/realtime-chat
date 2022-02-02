@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { confirmModel } from "../../../../entities/confirm";
-import { User } from "../../../../shared/api/model";
+import { IUser } from "../../../../shared/api/model";
 import { useModal } from "../../../../widgets";
 import { UserModal } from "../../../../widgets/user/ui/molecules";
 
@@ -15,7 +15,7 @@ const MessageLinkItemWrapper = styled.span<{ isYourMessage: boolean }>`
 interface Props {
   text: string;
   isYourMessage: boolean;
-  user?: User;
+  user?: IUser;
   isRealLink?: boolean;
 }
 

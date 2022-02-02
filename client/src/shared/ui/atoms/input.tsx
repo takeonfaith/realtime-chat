@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { FiEye, FiEyeOff, FiX } from "react-icons/fi";
 import styled from "styled-components";
+import { Loading } from ".";
 import Button from "./button";
 
 const InputWrapper = styled.div<{ leftIcon: boolean; background?: string }>`
@@ -79,6 +80,8 @@ interface Props {
   placeholder?: string;
   type?: string;
   background?: string;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  loading?: boolean;
 }
 
 const Input = ({
@@ -87,8 +90,10 @@ const Input = ({
   leftIcon,
   title,
   background,
+  onKeyDown,
   placeholder = "Введите сюда",
   type = "text",
+  loading = false,
 }: Props) => {
   const [inputType, setInputType] = useState(type);
   return (
@@ -104,10 +109,15 @@ const Input = ({
         placeholder={placeholder}
         value={value}
         onChange={(e) => setValue(e.target.value)}
+        onKeyDown={onKeyDown}
       />
       {type !== "password" ? (
         !!value.length && (
-          <Button icon={<FiX />} onClick={() => setValue("")} tabIndex={-1} />
+          <Button
+            icon={!loading ? <FiX /> : <Loading width="20px" />}
+            onClick={() => !loading && setValue("")}
+            tabIndex={-1}
+          />
         )
       ) : (
         <Button

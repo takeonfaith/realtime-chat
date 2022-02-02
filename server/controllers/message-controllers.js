@@ -103,7 +103,6 @@ const searchAllMessages = expressAsyncHandler(async (req, res) => {
 				path: 'chat.users',
 				select: 'name login'
 			})
-
 			res.json(message)
 		})
 

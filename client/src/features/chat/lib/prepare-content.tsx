@@ -1,4 +1,4 @@
-import { Chat, User } from "../../../shared/api/model";
+import { Chat, IUser } from "../../../shared/api/model";
 import { Message } from "../../../shared/api/model/message";
 import { MessageLink } from "../ui";
 
@@ -6,7 +6,7 @@ const prepareContent = (
   value: string,
   message: Message,
   selectedChat: Chat | null,
-  user: User | null
+  user: IUser | null
 ) => {
   const words = value.split(/\s/g);
   let result: React.ReactNode[] = [];

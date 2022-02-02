@@ -1,11 +1,13 @@
-import { User } from ".";
+import { IUser } from ".";
 import { Message } from "./message";
 
 export interface Chat {
   _id: string;
   chatName: string;
   isGroupChat: boolean;
-  users: User[];
+  users: IUser[];
   latestMessage: Message;
-  groupAdmin: User;
+  groupAdmin: IUser;
+  pinnedMessages?: Message[];
+  updatedAt: string;
 }

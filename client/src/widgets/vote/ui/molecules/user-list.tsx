@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { User } from "../../..";
-import { User as IUser } from "../../../../shared/api/model";
+import { IUser } from "../../../../shared/api/model";
 
 const UserListWrapper = styled.div`
   width: 300px;

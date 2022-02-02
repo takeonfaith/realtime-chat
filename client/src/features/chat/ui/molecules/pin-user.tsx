@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { userModel } from "../../../../entities/user";
-import { User as IUser } from "../../../../shared/api/model";
+import { IUser } from "../../../../shared/api/model";
 import { User } from "../../../../widgets";
 
 const PinUserWrapper = styled.div<{ show: boolean }>`

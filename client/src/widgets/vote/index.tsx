@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { FiChevronRight, FiPlusCircle } from "react-icons/fi";
 import { HiOutlinePencil, HiOutlineXCircle } from "react-icons/hi";
 import styled from "styled-components";
-import { useModal, User } from "..";
+import { useModal } from "..";
 import { userModel } from "../../entities/user";
-import { User as IUser } from "../../shared/api/model";
+import { IUser } from "../../shared/api/model";
 import { Button, Title } from "../../shared/ui/atoms";
 import { Avatar, RenameField } from "../../shared/ui/molecules";
 import { UserModal } from "../user/ui/molecules";
@@ -83,6 +83,7 @@ const VotingFieldWrapper = styled.div`
     padding: 5px 10px;
     border-radius: var(--brLight);
     width: fit-content;
+    cursor: pointer;
 
     &:hover {
       background: #ffffff58;
@@ -129,13 +130,6 @@ const VotingField = ({ mode, creator, title = "Голосование" }: Props)
         { _id: "2", login: "e", name: "ew", friends: [] },
         { _id: "3", login: "e", name: "ew", friends: [] },
         { _id: "4", login: "e", name: "ew", friends: [] },
-      ],
-    },
-    { name: "Тест1", vouters: [] },
-    { name: "Тест2", vouters: [] },
-    {
-      name: "Тест3",
-      vouters: [
         { _id: "41", login: "e", name: "ew", friends: [] },
         { _id: "21", login: "e", name: "ew", friends: [] },
         { _id: "33", login: "e", name: "ew", friends: [] },
@@ -145,6 +139,12 @@ const VotingField = ({ mode, creator, title = "Голосование" }: Props)
         { _id: "7", login: "e", name: "ew", friends: [] },
         { _id: "8", login: "e", name: "ew", friends: [] },
       ],
+    },
+    { name: "Тест1", vouters: [] },
+    { name: "Тест2", vouters: [] },
+    {
+      name: "Тест3",
+      vouters: [],
     },
   ]);
   const isCreator = user?._id === creator?._id;

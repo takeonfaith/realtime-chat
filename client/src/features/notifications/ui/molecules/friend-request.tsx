@@ -3,7 +3,7 @@ import { FiCheck, FiX } from "react-icons/fi";
 import styled from "styled-components";
 import { userModel } from "../../../../entities/user";
 import { userApi } from "../../../../shared/api";
-import { User as IUser } from "../../../../shared/api/model";
+import { IUser } from "../../../../shared/api/model";
 import { Colors } from "../../../../shared/consts";
 import { Button, Loading, Title } from "../../../../shared/ui/atoms";
 import { User } from "../../../../widgets";
