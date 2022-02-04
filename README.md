@@ -24,6 +24,8 @@ Features:
 ![image](https://user-images.githubusercontent.com/54980675/152503229-a7dc8a2c-e0ac-41dd-9155-bc18cba6529a.png)
 ### Chat messages
 ![image](https://user-images.githubusercontent.com/54980675/152503382-8e658d74-3336-4094-a7eb-1eaf7a2fbe1c.png)
+### Typing indicator
+![image](https://user-images.githubusercontent.com/54980675/152509887-8140eacb-810e-41f4-8b5d-e511608aa907.png)
 ### Creating group chat 
 ![image](https://user-images.githubusercontent.com/54980675/152503580-4323d208-2774-46e7-8656-3ade02e9d6ae.png)
 ### Group chat modal
