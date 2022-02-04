@@ -1,7 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
 import { contextMenuModel } from "../../entities/context-menu";
-import useOnClickOutside from "../../shared/lib/hooks/use-on-click-outside";
 import calcPosition from "./lib/calc-position";
 
 const ContextMenuWrapper = styled.div<{
@@ -41,15 +40,22 @@ const ContextMenu = () => {
   useEffect(() => {
     window.addEventListener("click", (e) => {
       if (!open) {
-        calcPosition(e);
+        calcPosition(
+          e,
+          contextRef.current?.offsetWidth,
+          contextRef.current?.offsetHeight
+        );
       }
     });
     window.addEventListener("contextmenu", (e) => {
-      calcPosition(e);
+      calcPosition(
+        e,
+        contextRef.current?.offsetWidth,
+        contextRef.current?.offsetHeight
+      );
     });
   }, [open]);
 
-  useOnClickOutside(contextRef, () => contextMenuModel.events.close());
   return (
     <ContextMenuWrapper
       isVisible={open}

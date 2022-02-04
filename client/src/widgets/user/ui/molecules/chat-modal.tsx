@@ -58,6 +58,7 @@ const ChatModalWrapper = styled.div`
   .section {
     width: 100%;
     margin: 5px 0;
+    overflow-y: auto;
 
     h5 {
       margin-bottom: 5px;
@@ -173,13 +174,18 @@ const ChatModal = () => {
         )}
         <Button
           icon={<FiLogOut />}
-          onClick={() => removeHandle(user?._id)}
+          onClick={() =>
+            confirmModel.events.evokeConfirm({
+              message: "Вы уверены, что хотите выйти?",
+              onConfirm: () => removeHandle(user?._id),
+            })
+          }
           background={Colors.red.transparent}
           textColor={Colors.red.main}
           text="Покинуть"
         />
       </div>
-      <div className="section" onClick={() => open(<Attachments />)}>
+      {/* <div className="section" onClick={() => open(<Attachments />)}>
         <Title size={5} align="left">
           Вложения
           <FiChevronRight />
@@ -219,13 +225,11 @@ const ChatModal = () => {
           />
         </div>
       </div>
-      <Divider />
-      <div className="section">
-        <Title size={5} align="left">
-          Администратор
-        </Title>
-        <User {...selectedChat.groupAdmin} status="online" />
-      </div>
+      <Divider /> */}
+      <Title size={5} align="left">
+        Администратор
+      </Title>
+      <User {...selectedChat.groupAdmin} status="online" />
       <div className="section">
         <Title size={5} align="left">
           Участники
